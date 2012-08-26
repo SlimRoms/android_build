@@ -160,7 +160,7 @@ def LoadRecoveryFSTab(zip):
     line = line.strip()
     if not line or line.startswith("#"): continue
     pieces = line.split()
-    if not (3 <= len(pieces) <= 4):
+    if not (3 <= len(pieces) <= 7):
       raise ValueError("malformed recovery.fstab line: \"%s\"" % (line,))
 
     p = Partition()
@@ -169,7 +169,7 @@ def LoadRecoveryFSTab(zip):
     p.device = pieces[2]
     p.length = 0
     options = None
-    if len(pieces) >= 4:
+    if len(pieces) >= 4 and pieces[3] != 'NULL':
       if pieces[3].startswith("/"):
         p.device2 = pieces[3]
         if len(pieces) >= 5:
@@ -222,25 +222,41 @@ def BuildBootableImage(sourcedir, fs_config_file):
   assert p1.returncode == 0, "mkbootfs of %s ramdisk failed" % (targetname,)
   assert p2.returncode == 0, "minigzip of %s ramdisk failed" % (targetname,)
 
-  cmd = ["mkbootimg", "--kernel", os.path.join(sourcedir, "kernel")]
-
-  fn = os.path.join(sourcedir, "cmdline")
+  """check if uboot is requested"""
+  fn = os.path.join(sourcedir, "ubootargs")
   if os.access(fn, os.F_OK):
-    cmd.append("--cmdline")
-    cmd.append(open(fn).read().rstrip("\n"))
+    cmd = ["mkimage"]
+    for argument in open(fn).read().rstrip("\n").split(" "):
+      cmd.append(argument)
+    cmd.append("-d")
+    cmd.append(os.path.join(sourcedir, "kernel")+":"+ramdisk_img.name)
+    cmd.append(img.name)
 
-  fn = os.path.join(sourcedir, "base")
-  if os.access(fn, os.F_OK):
-    cmd.append("--base")
-    cmd.append(open(fn).read().rstrip("\n"))
+  else:
+    cmd = ["mkbootimg", "--kernel", os.path.join(sourcedir, "kernel")]
 
-  fn = os.path.join(sourcedir, "pagesize")
-  if os.access(fn, os.F_OK):
-    cmd.append("--pagesize")
-    cmd.append(open(fn).read().rstrip("\n"))
+    fn = os.path.join(sourcedir, "cmdline")
+    if os.access(fn, os.F_OK):
+      cmd.append("--cmdline")
+      cmd.append(open(fn).read().rstrip("\n"))
 
-  cmd.extend(["--ramdisk", ramdisk_img.name,
-              "--output", img.name])
+    fn = os.path.join(sourcedir, "base")
+    if os.access(fn, os.F_OK):
+      cmd.append("--base")
+      cmd.append(open(fn).read().rstrip("\n"))
+
+    fn = os.path.join(sourcedir, "pagesize")
+    if os.access(fn, os.F_OK):
+      cmd.append("--pagesize")
+      cmd.append(open(fn).read().rstrip("\n"))
+
+    fn = os.path.join(sourcedir, "ramdiskaddr")
+    if os.access(fn, os.F_OK):
+      cmd.append("--ramdiskaddr")
+      cmd.append(open(fn).read().rstrip("\n"))
+
+    cmd.extend(["--ramdisk", ramdisk_img.name,
+                "--output", img.name])
 
   p = Run(cmd, stdout=subprocess.PIPE)
   p.communicate()

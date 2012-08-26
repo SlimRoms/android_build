@@ -148,15 +148,6 @@ ifeq ($(strip $(LOCAL_NO_FDO_SUPPORT)),)
   LOCAL_LDFLAGS += $(TARGET_FDO_CFLAGS)
 endif
 
-####################################################
-## Add profiling flags if aprof is turned on
-####################################################
-ifeq ($(strip $(LOCAL_ENABLE_APROF)),true)
-  # -ffunction-sections and -fomit-frame-pointer are conflict with -pg
-  LOCAL_CFLAGS += -fno-omit-frame-pointer -fno-function-sections -pg
-  LOCAL_CPPFLAGS += -fno-omit-frame-pointer -fno-function-sections -pg
-endif
-
 ###########################################################
 ## Explicitly declare assembly-only __ASSEMBLY__ macro for
 ## assembly source
@@ -563,6 +554,11 @@ all_objects := \
     $(lex_objects) \
     $(proto_generated_objects) \
     $(addprefix $(TOPDIR)$(LOCAL_PATH)/,$(LOCAL_PREBUILT_OBJ_FILES))
+
+## Allow a device's own headers to take precedence over global ones
+ifneq ($(TARGET_SPECIFIC_HEADER_PATH),)
+LOCAL_C_INCLUDES := $(TOPDIR)$(TARGET_SPECIFIC_HEADER_PATH) $(LOCAL_C_INCLUDES)
+endif
 
 LOCAL_C_INCLUDES += $(TOPDIR)$(LOCAL_PATH) $(intermediates)
 

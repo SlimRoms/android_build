@@ -44,10 +44,9 @@ ifeq (0,$(shell expr $$(echo $(MAKE_VERSION) | sed "s/[^0-9\.].*//") = 3.81))
 ifeq (0,$(shell expr $$(echo $(MAKE_VERSION) | sed "s/[^0-9\.].*//") = 3.82))
 $(warning ********************************************************************************)
 $(warning *  You are using version $(MAKE_VERSION) of make.)
-$(warning *  Android can only be built by versions 3.81 and 3.82.)
+$(warning *  Android is tested to build with versions 3.81 and 3.82.)
 $(warning *  see https://source.android.com/source/download.html)
 $(warning ********************************************************************************)
-$(error stopping)
 endif
 endif
 endif
@@ -84,7 +83,7 @@ include $(BUILD_SYSTEM)/config.mk
 # be generated correctly
 include $(BUILD_SYSTEM)/cleanbuild.mk
 
-VERSION_CHECK_SEQUENCE_NUMBER := 3
+VERSION_CHECK_SEQUENCE_NUMBER := 2
 -include $(OUT_DIR)/versions_checked.mk
 ifneq ($(VERSION_CHECK_SEQUENCE_NUMBER),$(VERSIONS_CHECKED))
 
@@ -129,7 +128,7 @@ java_version :=
 endif
 ifeq ($(strip $(java_version)),)
 $(info ************************************************************)
-$(info You are attempting to build with the incorrect version)
+$(info You are attempting to build with an unsupported version)
 $(info of java.)
 $(info $(space))
 $(info Your version is: $(shell java -version 2>&1 | head -n 1).)
@@ -138,7 +137,6 @@ $(info $(space))
 $(info Please follow the machine setup instructions at)
 $(info $(space)$(space)$(space)$(space)https://source.android.com/source/download.html)
 $(info ************************************************************)
-$(error stop)
 endif
 
 # Check for the correct version of javac
@@ -157,44 +155,8 @@ $(info ************************************************************)
 $(error stop)
 endif
 
-ifeq (darwin,$(HOST_OS))
-GCC_REALPATH = $(realpath $(shell which gcc))
-ifneq ($(findstring llvm-gcc,$(GCC_REALPATH)),)
-  # Using LLVM GCC results in a non functional emulator due to it
-  # not honouring global register variables
-  $(warning ****************************************)
-  $(warning * gcc is linked to llvm-gcc which will *)
-  $(warning * not create a useable emulator.       *)
-  $(warning ****************************************)
-  BUILD_EMULATOR := false
-else
-  BUILD_EMULATOR := true
-endif
-# When building on Leopard or above, we need to use the 10.4 SDK
-# or the generated binary will not run on Tiger.
-darwin_version := $(strip $(shell sw_vers -productVersion))
-ifneq ($(filter 10.1 10.2 10.3 10.1.% 10.2.% 10.3.% 10.4 10.4.%,$(darwin_version)),)
-    $(error Building the Android emulator requires OS X 10.5 or above)
-endif
-ifneq ($(filter 10.5 10.5.% 10.6 10.6.%,$(darwin_version)),)
-    # We are on Leopard or Snow Leopard
-    MSDK=10.5
-else
-    # We are on Lion or beyond, and 10.6 SDK is the minimum in Xcode 4.x
-   MSDK=10.6
-endif
-MACOSX_SDK := /Developer/SDKs/MacOSX$(MSDK).sdk
-ifeq ($(strip $(wildcard $(MACOSX_SDK))),)
-  BUILD_EMULATOR := false
-endif
-else   # HOST_OS is not darwin
-  BUILD_EMULATOR := true
-endif  # HOST_OS is darwin
-
 $(shell echo 'VERSIONS_CHECKED := $(VERSION_CHECK_SEQUENCE_NUMBER)' \
         > $(OUT_DIR)/versions_checked.mk)
-$(shell echo 'BUILD_EMULATOR := $(BUILD_EMULATOR)' \
-        >> $(OUT_DIR)/versions_checked.mk)
 endif
 
 # These are the modifier targets that don't do anything themselves, but
@@ -272,10 +234,6 @@ ifneq ($(filter sdk win_sdk sdk_addon,$(MAKECMDGOALS)),)
 is_sdk_build := true
 endif
 
-## have selinux ##
-ifeq ($(HAVE_SELINUX),true)
-ADDITIONAL_BUILD_PROPERTIES += ro.build.selinux=1
-endif # HAVE_SELINUX
 
 ## user/userdebug ##
 
@@ -378,17 +336,6 @@ ifneq ($(filter dalvik.gc.type-precise,$(PRODUCT_TAGS)),)
   # to overflow on some devices, so this is configured separately for
   # each product.
   ADDITIONAL_BUILD_PROPERTIES += dalvik.vm.dexopt-flags=m=y
-endif
-
-ifneq ($(BUILD_TINY_ANDROID),true)
-# Install an apns-conf.xml file if one's not already being installed.
-ifeq (,$(filter %:system/etc/apns-conf.xml, $(PRODUCT_COPY_FILES)))
-  PRODUCT_COPY_FILES += \
-        development/data/etc/apns-conf_sdk.xml:system/etc/apns-conf.xml
-  ifeq ($(filter eng tests,$(TARGET_BUILD_VARIANT)),)
-    $(warning implicitly installing apns-conf_sdk.xml)
-  endif
-endif
 endif
 
 ADDITIONAL_BUILD_PROPERTIES += net.bt.name=Android
@@ -532,7 +479,7 @@ endif # ONE_SHOT_MAKEFILE
 include $(BUILD_SYSTEM)/post_clean.mk
 
 ifeq ($(stash_product_vars),true)
- # $(call assert-product-vars, __STASHED)
+  $(call assert-product-vars, __STASHED)
 endif
 
 include $(BUILD_SYSTEM)/legacy_prebuilts.mk
@@ -864,7 +811,7 @@ findbugs: $(INTERNAL_FINDBUGS_HTML_TARGET) $(INTERNAL_FINDBUGS_XML_TARGET)
 
 .PHONY: clean
 clean:
-	@rm -rf $(OUT_DIR)
+	@rm -rf $(OUT_DIR)/*
 	@echo "Entire build directory removed."
 
 .PHONY: clobber

@@ -36,8 +36,12 @@ include $(TARGET_ARCH_SPECIFIC_MAKEFILE)
 
 # You can set TARGET_TOOLS_PREFIX to get gcc from somewhere else
 ifeq ($(strip $(TARGET_TOOLS_PREFIX)),)
-TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/x86/i686-linux-android-4.6
-TARGET_TOOLS_PREFIX := $(TARGET_TOOLCHAIN_ROOT)/bin/i686-linux-android-
+ifneq ($(strip $(wildcard prebuilts/gcc/$(HOST_PREBUILT_EXTRA_TAG)/x86/i686-android-linux-4.4.3)),)
+TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_EXTRA_TAG)/x86/i686-android-linux-4.4.3
+else
+TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/x86/i686-android-linux-4.4.3
+endif
+TARGET_TOOLS_PREFIX := $(TARGET_TOOLCHAIN_ROOT)/bin/i686-android-linux-
 endif
 
 TARGET_CC := $(TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
@@ -104,7 +108,7 @@ TARGET_GLOBAL_CPPFLAGS += \
 # however, there have been reports that this is sometimes not the case. So make
 # them explicit here unless we have the time to carefully check it
 #
-TARGET_GLOBAL_CFLAGS += -mstackrealign -msse3 -mfpmath=sse -m32
+TARGET_GLOBAL_CFLAGS += -mstackrealign -msse3 -mfpmath=sse
 
 # XXX: These flags should not be defined here anymore. Instead, the Android.mk
 # of the modules that depend on these features should instead check the
@@ -186,14 +190,11 @@ $(hide) $(PRIVATE_CXX) \
 endef
 
 
-# Add -fuse-ld=bfd because ld.gold doesn't support "--copy-dt-needed-entries".
 define transform-o-to-executable-inner
 $(hide) $(PRIVATE_CXX) \
 	$(TARGET_GLOBAL_LDFLAGS) \
 	-nostdlib -Bdynamic \
 	-Wl,-dynamic-linker,/system/bin/linker \
-	-Wl,--copy-dt-needed-entries \
-	-fuse-ld=bfd \
 	-Wl,-z,nocopyreloc \
 	-fPIE -pie \
 	-o $@ \
@@ -202,9 +203,6 @@ $(hide) $(PRIVATE_CXX) \
 	$(call normalize-target-libraries,$(PRIVATE_ALL_SHARED_LIBRARIES)) \
 	$(if $(filter true,$(PRIVATE_NO_CRT)),,$(TARGET_CRTBEGIN_DYNAMIC_O)) \
 	$(PRIVATE_ALL_OBJECTS) \
-	-Wl,--whole-archive \
-	$(call normalize-target-libraries,$(PRIVATE_ALL_WHOLE_STATIC_LIBRARIES)) \
-	-Wl,--no-whole-archive \
 	$(if $(PRIVATE_GROUP_STATIC_LIBRARIES),-Wl$(comma)--start-group) \
 	$(call normalize-target-libraries,$(PRIVATE_ALL_STATIC_LIBRARIES)) \
 	$(if $(PRIVATE_GROUP_STATIC_LIBRARIES),-Wl$(comma)--end-group) \
@@ -222,9 +220,6 @@ $(hide) $(PRIVATE_CXX) \
 	$(if $(filter true,$(PRIVATE_NO_CRT)),,$(TARGET_CRTBEGIN_STATIC_O)) \
 	$(PRIVATE_LDFLAGS) \
 	$(PRIVATE_ALL_OBJECTS) \
-	-Wl,--whole-archive \
-	$(call normalize-target-libraries,$(PRIVATE_ALL_WHOLE_STATIC_LIBRARIES)) \
-	-Wl,--no-whole-archive \
 	-Wl,--start-group \
 	$(call normalize-target-libraries,$(PRIVATE_ALL_STATIC_LIBRARIES)) \
 	$(TARGET_LIBGCC) \

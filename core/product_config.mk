@@ -185,12 +185,16 @@ ifneq ($(strip $(TARGET_BUILD_APPS)),)
   $(call import-products,$(call get-product-makefiles,\
       $(SRC_TARGET_DIR)/product/AndroidProducts.mk))
 else
+  ifneq ($(CM_BUILD),)
+    $(call import-products, device/*/$(CM_BUILD)/cm.mk)
+  else
   # Read in all of the product definitions specified by the AndroidProducts.mk
-  # files in the tree.
-  #
-  #TODO: when we start allowing direct pointers to product files,
-  #    guarantee that they're in this list.
-  $(call import-products, $(get-all-product-makefiles))
+    # files in the tree.
+    #
+    #TODO: when we start allowing direct pointers to product files,
+    #    guarantee that they're in this list.
+    $(call import-products, $(get-all-product-makefiles))
+  endif
 endif # TARGET_BUILD_APPS
 $(check-all-products)
 
@@ -296,6 +300,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
 # used for adding properties to default.prop
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
     $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_DEFAULT_PROPERTY_OVERRIDES))
+
+PRODUCT_BUILD_PROP_OVERRIDES := \
+	$(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_BUILD_PROP_OVERRIDES))
 
 # Should we use the default resources or add any product specific overlays
 PRODUCT_PACKAGE_OVERLAYS := \
