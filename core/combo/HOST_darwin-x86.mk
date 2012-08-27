@@ -48,8 +48,8 @@ endif # build_mac_version is 10.6
 HOST_GLOBAL_CFLAGS += -fPIC
 HOST_NO_UNDEFINED_LDFLAGS := -Wl,-undefined,error
 
-HOST_CC := $(CC)
-HOST_CXX := $(CXX)
+HOST_CC := gcc
+HOST_CXX := g++
 HOST_AR := $(AR)
 HOST_STRIP := $(STRIP)
 HOST_STRIP_COMMAND = $(HOST_STRIP) --strip-debug $< -o $@
@@ -126,5 +126,10 @@ endef
 
 # $(1): The file to check
 define get-file-size
-stat -f "%z" $(1)
+GSTAT=$(which gstat) ; \
+if [ ! -z "$GSTAT" ]; then \
+gstat -c "%s" $(1) ; \
+else \
+stat -f "%z" $(1) ; \
+fi
 endef
