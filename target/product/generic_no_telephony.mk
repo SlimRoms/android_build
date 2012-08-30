@@ -36,7 +36,6 @@ PRODUCT_PACKAGES := \
     MusicFX \
     Provision \
     Phone \
-    SlimSettings \
     Settings \
     SystemUI \
     CalendarProvider \
