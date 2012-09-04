@@ -23,15 +23,9 @@ PRODUCT_PACKAGES := \
     DeskClock \
     Bluetooth \
     Calculator \
-    Calendar \
     CertInstaller \
     DrmProvider \
-    Email \
-    Exchange2 \
-    Gallery2 \
     InputDevices \
-    LatinIME \
-    Launcher2 \
     Music \
     MusicFX \
     Provision \

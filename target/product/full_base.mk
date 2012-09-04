@@ -30,12 +30,9 @@ PRODUCT_PACKAGES := \
 PRODUCT_PACKAGES += \
     Galaxy4 \
     HoloSpiralWallpaper \
-    LiveWallpapers \
     LiveWallpapersPicker \
-    MagicSmokeWallpapers \
     NoiseField \
-    PhaseBeam \
-    VisualizationWallpapers
+    PhaseBeam
 
 PRODUCT_PACKAGES += \
     libvideoeditor_jni \
