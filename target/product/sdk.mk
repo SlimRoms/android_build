@@ -20,8 +20,6 @@ PRODUCT_PROPERTY_OVERRIDES :=
 PRODUCT_PACKAGES := \
 	Calculator \
 	DeskClock \
-	Email \
-	Exchange2 \
 	Gallery \
 	Music \
 	Mms \
@@ -34,7 +32,6 @@ PRODUCT_PACKAGES := \
 	Protips \
 	SoftKeyboard \
 	SystemUI \
-	Launcher2 \
 	Development \
 	DrmProvider \
 	Fallback \
@@ -43,7 +40,6 @@ PRODUCT_PACKAGES := \
 	CustomLocale \
 	sqlite3 \
 	InputDevices \
-	LatinIME \
 	CertInstaller \
 	LiveWallpapersPicker \
 	ApiDemos \

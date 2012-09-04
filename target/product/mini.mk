@@ -147,8 +147,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     Bluetooth \
     InputDevices \
-    LatinIME \
-    Launcher2 \
     Phone \
     Provision \
     Settings \
