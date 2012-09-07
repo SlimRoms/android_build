@@ -403,6 +403,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
     script.Unmount("/system")
 
   script.ShowProgress(0.5, 0)
+  script.Print("")
+  script.Print("")
+  script.Print("Slim Roms")
+  script.Print("")
+  script.Print(" www.slimroms.net  ")
+  script.Print("")
 
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
@@ -410,6 +416,8 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
+  script.Print("")
+  script.Print("Format and Mount System, Mount Data...")
   script.FormatPartition("/system")
   script.Mount("/system")
   script.Mount("/data")
@@ -417,6 +425,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.UnpackPackageDir("system", "/system")
   script.UnpackPackageDir("data", "/data")
 
+  script.Print("Symlinks and permissions...")
   symlinks = CopySystemFiles(input_zip, output_zip)
   script.MakeSymlinks(symlinks)
 
@@ -441,6 +450,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
   #  script.RunConfig("")
 
   script.ShowProgress(0.2, 10)
+  script.Print("Flashing boot image...")
   script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.1, 0)
