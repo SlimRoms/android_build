@@ -26,6 +26,7 @@ PRODUCT_PACKAGES := \
     CertInstaller \
     DrmProvider \
     InputDevices \
+    Gallery2 \
     Music \
     MusicFX \
     Provision \
