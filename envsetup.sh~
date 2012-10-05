@@ -564,6 +564,7 @@ function lunch()
         T=$(gettop)
         pushd $T > /dev/null
         build/tools/roomservice.py $product
+        vendor/slim/tools/getvendorprops.py $product
         popd > /dev/null
         check_product $product
     else
