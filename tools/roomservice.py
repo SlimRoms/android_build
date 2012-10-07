@@ -25,7 +25,7 @@ product = sys.argv[1];
 if len(sys.argv) > 2:
     depsonly = sys.argv[2]
 else:
-    depsonly = True
+    depsonly = None
 
 try:
     device = product[product.index("_") + 1:]
