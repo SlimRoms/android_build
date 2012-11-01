@@ -115,7 +115,7 @@ class EdifyGenerator(object):
     self.script.append('run_program("/sbin/busybox", "cp", "/system/build.prop", "/tmp/build.prop");')
 
   def RunDensityRestore(self, command):
-    self.script.append('package_extract_file("density.sh", "/tmp/density.sh");')
+    self.script.append('package_extract_file("system/bin/density.sh", "/tmp/density.sh");')
     self.script.append('set_perm(0, 0, 0777, "/tmp/density.sh");')
     self.script.append('run_program("/tmp/density.sh", "build.prop");')
 
