@@ -111,8 +111,8 @@ class EdifyGenerator(object):
         self.script.append('delete("/system/bin/backuptool.sh");')
         self.script.append('delete("/system/bin/backuptool.functions");')
 
-  def RunDensityBackup(self):
-    self.script.append('run_program("/sbin/busybox", "cp", "/system/build.prop", "/tmp/build.prop");')
+  def RunDensityBackup(self, command):
+    self.script.append('run_program("/sbin/busybox", "%s", "/system/build.prop", "/tmp/build.prop");' % command)
 
   def RunDensityRestore(self, command):
     self.script.append('package_extract_file("system/bin/density.sh", "/tmp/density.sh");')
