@@ -472,7 +472,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if OPTIONS.backuptool:
     script.ShowProgress(0.2, 10)
     script.RunBackup("restore")
-    script.RunDensityRestore
+    script.RunDensityRestore("build.prop")
 
   #if OPTIONS.modelidcfg:
   #  script.RunConfig("")
