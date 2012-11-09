@@ -523,6 +523,12 @@ function brunch()
     return $?
 }
 
+function omnom
+{
+    brunch $*
+    eat
+}
+
 function breakfast()
 {
     target=$1
