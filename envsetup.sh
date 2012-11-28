@@ -6,7 +6,9 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - croot:   Changes directory to the top of the tree.
 - m:       Makes from the top of the tree.
 - mm:      Builds all of the modules in the current directory.
+- mmp:     Builds all of the modules in the current directory and pushes them to the device.
 - mmm:     Builds all of the modules in the supplied directories.
+- mmmp:    Builds all of the modules in the supplied directories and pushes them to the device.
 - cgrep:   Greps on all local C/C++ files.
 - jgrep:   Greps on all local Java files.
 - resgrep: Greps on all local res/*.xml files.
@@ -55,6 +57,14 @@ function check_product()
         echo "Couldn't locate the top of the tree.  Try setting TOP." >&2
         return
     fi
+
+    if (echo -n $1 | grep -q -e "^slim_") ; then
+       SLIM_BUILD=$(echo -n $1 | sed -e 's/^slim_//g')
+    else
+       SLIM_BUILD=
+    fi
+    export SLIM_BUILD
+
     CALLED_FROM_SETUP=true BUILD_SYSTEM=build/core \
         TARGET_PRODUCT=$1 \
         TARGET_BUILD_VARIANT= \
@@ -483,6 +493,17 @@ function lunch()
 
     local product=$(echo -n $selection | sed -e "s/-.*$//")
     check_product $product
+    if [ $? -ne 0 ]
+    then
+        # if we can't find a product, try to grab it off the SlimRoms github
+        T=$(gettop)
+        pushd $T > /dev/null
+        build/tools/roomservice.py $product
+        popd > /dev/null
+        check_product $product
+    else
+        build/tools/roomservice.py $product true
+    fi
     if [ $? -ne 0 ]
     then
         echo

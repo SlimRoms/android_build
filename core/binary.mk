@@ -524,7 +524,7 @@ import_includes_deps := $(strip \
     $(foreach l, $(LOCAL_STATIC_LIBRARIES) $(LOCAL_WHOLE_STATIC_LIBRARIES), \
       $(call intermediates-dir-for,STATIC_LIBRARIES,$(l),$(LOCAL_IS_HOST_MODULE))/export_includes))
 $(import_includes) : $(import_includes_deps)
-	@echo Import includes file: $@
+	@echo -e ${CL_CYN}Import includes file:${CL_RST} $@
 	$(hide) mkdir -p $(dir $@) && rm -f $@
 ifdef import_includes_deps
 	$(hide) for f in $^; do \
@@ -552,6 +552,11 @@ all_objects := \
     $(lex_objects) \
     $(proto_generated_objects) \
     $(addprefix $(TOPDIR)$(LOCAL_PATH)/,$(LOCAL_PREBUILT_OBJ_FILES))
+
+## Allow a device's own headers to take precedence over global ones
+ifneq ($(TARGET_SPECIFIC_HEADER_PATH),)
+LOCAL_C_INCLUDES := $(TOPDIR)$(TARGET_SPECIFIC_HEADER_PATH) $(LOCAL_C_INCLUDES)
+endif
 
 LOCAL_C_INCLUDES += $(TOPDIR)$(LOCAL_PATH) $(intermediates)
 
@@ -691,7 +696,7 @@ $(LOCAL_INSTALLED_MODULE): | $(installed_static_library_notice_file_targets)
 export_includes := $(intermediates)/export_includes
 $(export_includes): PRIVATE_EXPORT_C_INCLUDE_DIRS := $(LOCAL_EXPORT_C_INCLUDE_DIRS)
 $(export_includes) : $(LOCAL_MODULE_MAKEFILE)
-	@echo Export includes file: $< -- $@
+	@echo -e ${CL_CYN}Export includes file:${CL_RST} $< -- $@
 	$(hide) mkdir -p $(dir $@) && rm -f $@
 ifdef LOCAL_EXPORT_C_INCLUDE_DIRS
 	$(hide) for d in $(PRIVATE_EXPORT_C_INCLUDE_DIRS); do \
