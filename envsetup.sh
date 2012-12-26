@@ -770,6 +770,8 @@ function eat()
             done
             echo "Device Found.."
         fi
+    if (adb shell cat /system/build.prop | grep -q "ro.slim.device=$SLIM_BUILD");
+    then
         # if adbd isn't root we can't write to /cache/recovery/
         adb root
         sleep 1
@@ -801,6 +803,9 @@ EOF
         return 1
     fi
     return $?
+    else
+        echo "The connected device does not appear to be $SLIM_BUILD, run away!"
+    fi
 }
 
 function omnom
@@ -1731,6 +1736,8 @@ function dopush()
         echo "Device Found."
     fi
 
+    if (adb shell cat /system/build.prop | grep -q "ro.slim.device=$SLIM_BUILD");
+    then
     adb root &> /dev/null
     sleep 0.3
     adb wait-for-device &> /dev/null
@@ -1769,6 +1776,9 @@ function dopush()
     done
     rm -f $OUT/.log
     return 0
+    else
+        echo "The connected device does not appear to be $SLIM_BUILD, run away!"
+    fi
 }
 
 alias mmp='dopush mm'
