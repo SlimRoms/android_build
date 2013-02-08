@@ -49,8 +49,8 @@ while not depsonly:
 def exists_in_tree(lm, repository):
     for child in lm.getchildren():
         if child.attrib['name'].endswith(repository):
-            return True
-    return False
+            return child
+    return None
 
 # in-place prettyprint formatter
 def indent(elem, level=0):
@@ -92,7 +92,7 @@ def get_from_manifest(devicename):
 
     return None
 
-def is_in_manifest(projectname):
+def is_in_manifest(projectname, branch):
     try:
         lm = ElementTree.parse(".repo/local_manifest.xml")
         lm = lm.getroot()
@@ -100,7 +100,7 @@ def is_in_manifest(projectname):
         lm = ElementTree.Element("manifest")
 
     for localpath in lm.findall("project"):
-        if localpath.get("name") == projectname:
+        if localpath.get("name") == projectname and localpath.get("revision") == branch:
             return 1
 
     return None
@@ -115,8 +115,13 @@ def add_to_manifest_dependencies(repositories):
     for repository in repositories:
         repo_name = repository['repository']
         repo_target = repository['target_path']
-        if exists_in_tree(lm, repo_name):
-            print '%s already exists' % (repo_name)
+        existing_project = exists_in_tree(lm, repo_name)
+        if existing_project != None:
+            if existing_project.attrib['revision'] == repository['branch']:
+                print 'SlimRoms/%s already exists' % (repo_name)
+            else:
+                print 'updating branch for SlimRoms/%s to %s' % (repo_name, repository['branch'])
+                existing_project.set('revision', repository['branch'])
             continue
 
         print 'Adding dependency: %s -> %s' % (repo_name, repo_target)
@@ -146,8 +151,13 @@ def add_to_manifest(repositories):
     for repository in repositories:
         repo_name = repository['repository']
         repo_target = repository['target_path']
-        if exists_in_tree(lm, repo_name):
-            print 'SlimRoms/%s already exists' % (repo_name)
+        existing_project = exists_in_tree(lm, repo_name)
+        if existing_project != None:
+            if existing_project.attrib['revision'] == repository['branch']:
+                print 'SlimRoms/%s already exists' % (repo_name)
+            else:
+                print 'updating branch for SlimRoms/%s to %s' % (repo_name, repository['branch'])
+                existing_project.set('revision', repository['branch'])
             continue
 
         print 'Adding dependency: SlimRoms/%s -> %s' % (repo_name, repo_target)
@@ -155,7 +165,7 @@ def add_to_manifest(repositories):
             "remote": "github", "name": "SlimRoms/%s" % repo_name, "revision": "jb4.2" })
 
         if 'branch' in repository:
-            project.set('revision',repository['branch'])
+            project.set('revision', repository['branch'])
 
         lm.append(project)
 
@@ -178,7 +188,7 @@ def fetch_dependencies(repo_path):
         fetch_list = []
 
         for dependency in dependencies:
-            if not is_in_manifest("%s" % dependency['repository']):
+            if not is_in_manifest("%s" % dependency['repository'], "%s" % dependency['branch']):
                 fetch_list.append(dependency)
                 syncable_repos.append(dependency['target_path'])
 
