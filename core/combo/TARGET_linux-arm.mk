@@ -72,7 +72,7 @@ TARGET_arm_CFLAGS :=    -O3 \
                         -fstrict-aliasing    \
                         -funswitch-loops
 else
-TARGET_arm_CFLAGS :=    -Os \
+TARGET_arm_CFLAGS :=    -O2 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
@@ -90,7 +90,7 @@ ifeq ($(TARGET_USE_O3),true)
                             -fno-strict-aliasing
 else
     TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O2 \
+                            -Os \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing
 endif
