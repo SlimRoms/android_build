@@ -72,7 +72,7 @@ TARGET_arm_CFLAGS :=    -O3 \
                         -fstrict-aliasing    \
                         -funswitch-loops
 else
-TARGET_arm_CFLAGS :=    -O2 \
+TARGET_arm_CFLAGS :=    -Os \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
