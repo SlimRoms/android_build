@@ -1895,10 +1895,9 @@ function installboot()
     adb start-server
     adb root
     sleep 1
-    adb wait-for-device
-    adb remount
-    adb wait-for-device
-    if (adb shell cat /system/build.prop | grep -q "ro.slim.device=$CM_BUILD");
+    adb wait-for-online shell mount /system 2>&1 > /dev/null
+    adb wait-for-online remount
+    if (adb shell cat /system/build.prop | grep -q "ro.slim.device=$SLIM_BUILD");
     then
         adb push $OUT/boot.img /cache/
         for i in $OUT/system/lib/modules/*;
@@ -1909,7 +1908,7 @@ function installboot()
         adb shell chmod 644 /system/lib/modules/*
         echo "Installation complete."
     else
-        echo "The connected device does not appear to be $CM_BUILD, run away!"
+        echo "The connected device does not appear to be $SLIM_BUILD, run away!"
     fi
 }
 
@@ -1934,16 +1933,15 @@ function installrecovery()
     adb start-server
     adb root
     sleep 1
-    adb wait-for-device
-    adb remount
-    adb wait-for-device
-    if (adb shell cat /system/build.prop | grep -q "ro.slim.device=$CM_BUILD");
+    adb wait-for-online shell mount /system 2>&1 > /dev/null
+    adb wait-for-online remount
+    if (adb shell cat /system/build.prop | grep -q "ro.slim.device=$SLIM_BUILD");
     then
         adb push $OUT/recovery.img /cache/
         adb shell dd if=/cache/recovery.img of=$PARTITION
         echo "Installation complete."
     else
-        echo "The connected device does not appear to be $CM_BUILD, run away!"
+        echo "The connected device does not appear to be $SLIM_BUILD, run away!"
     fi
 }
 
