@@ -200,7 +200,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
 ifneq ($(TOPDIR),)
 OUT_DIR := $(TOPDIR)out
 else
-OUT_DIR := $(shell readlink -f .)/out
+OUT_DIR := $(CURDIR)/out
 endif
 else
 OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
