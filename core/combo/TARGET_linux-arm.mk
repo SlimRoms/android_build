@@ -76,7 +76,12 @@ TARGET_arm_CFLAGS :=    -Os \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -fno-zero-initialized-in-bss \
-                        -funswitch-loops
+                        -funswitch-loops \
+                        -fno-tree-vectorize \
+                        -funsafe-loop-optimizations \
+                        -Wno-unused-parameter \
+                        -Wno-unused-value \
+                        -Wno-unused-function
 endif
 
 # Modules can choose to compile some source as thumb. As
@@ -88,7 +93,14 @@ ifeq ($(TARGET_USE_O3),true)
     TARGET_thumb_CFLAGS :=  -mthumb \
                             -O3 \
                             -fomit-frame-pointer \
-                            -fno-strict-aliasing
+                            -fno-strict-aliasing \
+                            -Wstrict-aliasing=2 \
+                            -Werror=strict-aliasing \
+                            -fno-tree-vectorize \
+                            -funsafe-math-optimizations \
+                            -Wno-unused-parameter \
+                            -Wno-unused-value \
+                            -Wno-unused-function
 else
     TARGET_thumb_CFLAGS :=  -mthumb \
                             -Os \
