@@ -16,6 +16,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - cgrep:   Greps on all local C/C++ files.
 - ggrep:   Greps on all local Gradle files.
 - jgrep:   Greps on all local Java files.
+- repopick: Utility to fetch changes from Gerrit.
 - resgrep: Greps on all local res/*.xml files.
 - mangrep: Greps on all local AndroidManifest.xml files.
 - sepgrep: Greps on all local sepolicy files.
@@ -1571,6 +1572,11 @@ function godir () {
         pathname=${lines[0]}
     fi
     \cd $T/$pathname
+}
+
+function repopick() {
+    T=$(gettop)
+    $T/build/tools/repopick.py $@
 }
 
 # Force JAVA_HOME to point to java 1.7 if it isn't already set.
