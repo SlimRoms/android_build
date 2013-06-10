@@ -107,6 +107,11 @@ TARGET_GLOBAL_CFLAGS += \
 			-include $(android_config_h) \
 			-I $(dir $(android_config_h))
 
+# option to enable pipe
+ifeq ($(TARGET_USE_PIPE),true)
+    TARGET_GLOBAL_CFLAGS += -pipe
+endif
+
 # XXX: Not sure this is still needed. Must check with our toolchains.
 TARGET_GLOBAL_CPPFLAGS += \
 			-fno-use-cxa-atexit
