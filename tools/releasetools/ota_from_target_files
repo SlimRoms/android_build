@@ -418,10 +418,17 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.ShowProgress(0.5, 0)
   script.Print("")
   script.Print("")
-  script.Print("Slim Roms")
+  script.Print("Illusion")
   script.Print("")
-  script.Print(" www.slimroms.net  ")
   script.Print("")
+  script.Print("")
+  script.Print("*******************************************")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*           RUNNING BACKUP TOOL           *")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*******************************************")
 
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
@@ -437,9 +444,25 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.UnpackPackageDir("system", "/system")
   script.UnpackPackageDir("data", "/data")
 
+  script.Print("*******************************************")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*           INSTALLING ILLUSION           *")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*******************************************")
+
   script.Print("Symlinks and permissions...")
   symlinks = CopySystemFiles(input_zip, output_zip)
   script.MakeSymlinks(symlinks)
+
+  script.Print("*******************************************")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*             FLASHING KERNEL             *")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*******************************************")
 
   boot_img = common.GetBootableImage("boot.img", "boot.img",
                                      OPTIONS.input_tmp, "BOOT")
@@ -462,8 +485,17 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.Print("Flashing Boot Image...")
   script.WriteRawImage("/boot", "boot.img")
 
+  script.Print("*******************************************")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*            ILLUSION INSTALLED           *")
+  script.Print("*                                         *")
+  script.Print("*                                         *")
+  script.Print("*******************************************")
+
   script.ShowProgress(0.1, 0)
   device_specific.FullOTA_InstallEnd()
+
 
   if OPTIONS.extra_script is not None:
     script.AppendExtra(OPTIONS.extra_script)
