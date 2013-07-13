@@ -51,6 +51,12 @@ if not os.path.exists(local_manifests): os.makedirs(local_manifests)
 
 def exists_in_tree(lm, repository):
     for child in lm.getchildren():
+        if child.attrib['path'].endswith(repository):
+            return child
+    return None
+
+def exists_in_tree_device(lm, repository):
+    for child in lm.getchildren():
         if child.attrib['name'].endswith(repository):
             return child
     return None
@@ -118,12 +124,15 @@ def add_to_manifest_dependencies(repositories):
     for repository in repositories:
         repo_name = repository['repository']
         repo_target = repository['target_path']
-        existing_project = exists_in_tree(lm, repo_name)
+        existing_project = exists_in_tree(lm, repo_target)
         if existing_project != None:
+            if existing_project.attrib['name'] != repository['repository']:
+                print 'Updating dependency %s' % (repo_name)
+                existing_project.set('name', repository['repository'])
             if existing_project.attrib['revision'] == repository['branch']:
                 print 'SlimRoms/%s already exists' % (repo_name)
             else:
-                print 'updating branch for SlimRoms/%s to %s' % (repo_name, repository['branch'])
+                print 'updating branch for %s to %s' % (repo_name, repository['branch'])
                 existing_project.set('revision', repository['branch'])
             continue
 
@@ -154,7 +163,7 @@ def add_to_manifest(repositories):
     for repository in repositories:
         repo_name = repository['repository']
         repo_target = repository['target_path']
-        existing_project = exists_in_tree(lm, repo_name)
+        existing_project = exists_in_tree_device(lm, repo_name)
         if existing_project != None:
             if existing_project.attrib['revision'] == repository['branch']:
                 print 'SlimRoms/%s already exists' % (repo_name)
