@@ -21,11 +21,13 @@ systemmount=${systemarray[2]}
 
 rm -r $OUT/*kernel*
 
-if [ -f "$UPDATER" ]
+if [ ! -f "$UPDATER" ]
 then
-    echo ""
-else
-    make updater >> /dev/null
+    make updater &>> /dev/null
+fi
+if [ ! -f "${ANDROID_HOST_OUT}/framework/signapk.jar" ]
+then
+    make signapk &>> /dev/null
 fi
 
 if [ "$KERNELVERSION" != "" ]
