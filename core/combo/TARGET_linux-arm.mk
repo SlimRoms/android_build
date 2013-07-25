@@ -34,6 +34,12 @@ ifeq ($(strip $(TARGET_ARCH_VARIANT)),)
 TARGET_ARCH_VARIANT := armv5te
 endif
 
+ifeq ($(strip $(TARGET_GCC_VERSION_EXP)),)
+TARGET_GCC_VERSION := 4.7
+else
+TARGET_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
+endif
+
 TARGET_ARCH_SPECIFIC_MAKEFILE := $(BUILD_COMBOS)/arch/$(TARGET_ARCH)/$(TARGET_ARCH_VARIANT).mk
 ifeq ($(strip $(wildcard $(TARGET_ARCH_SPECIFIC_MAKEFILE))),)
 $(error Unknown ARM architecture version: $(TARGET_ARCH_VARIANT))
@@ -47,21 +53,17 @@ TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androi
 TARGET_TOOLS_PREFIX := $(TARGET_TOOLCHAIN_ROOT)/bin/arm-linux-androideabi-
 endif
 
-# Only define these if there's actually a gcc in there.
-# The gcc toolchain does not exists for windows/cygwin. In this case, do not reference it.
-ifneq ($(wildcard $(TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)),)
-    TARGET_CC := $(TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
-    TARGET_CXX := $(TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
-    TARGET_AR := $(TARGET_TOOLS_PREFIX)ar$(HOST_EXECUTABLE_SUFFIX)
-    TARGET_OBJCOPY := $(TARGET_TOOLS_PREFIX)objcopy$(HOST_EXECUTABLE_SUFFIX)
-    TARGET_LD := $(TARGET_TOOLS_PREFIX)ld$(HOST_EXECUTABLE_SUFFIX)
-    TARGET_STRIP := $(TARGET_TOOLS_PREFIX)strip$(HOST_EXECUTABLE_SUFFIX)
-    ifeq ($(TARGET_BUILD_VARIANT),user)
-        TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-all $< -o $@
-    else
-        TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-all $< -o $@ && \
-            $(TARGET_OBJCOPY) --add-gnu-debuglink=$< $@
-    endif
+TARGET_CC := $(TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
+TARGET_CXX := $(TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
+TARGET_AR := $(TARGET_TOOLS_PREFIX)ar$(HOST_EXECUTABLE_SUFFIX)
+TARGET_OBJCOPY := $(TARGET_TOOLS_PREFIX)objcopy$(HOST_EXECUTABLE_SUFFIX)
+TARGET_LD := $(TARGET_TOOLS_PREFIX)ld$(HOST_EXECUTABLE_SUFFIX)
+TARGET_STRIP := $(TARGET_TOOLS_PREFIX)strip$(HOST_EXECUTABLE_SUFFIX)
+ifeq ($(TARGET_BUILD_VARIANT),user)
+    TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-all $< -o $@
+else
+    TARGET_STRIP_COMMAND = $(TARGET_STRIP) --strip-all $< -o $@ && \
+        $(TARGET_OBJCOPY) --add-gnu-debuglink=$< $@
 endif
 
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
@@ -173,18 +175,11 @@ TARGET_GLOBAL_LDFLAGS += \
 			-Wl,-z,relro \
 			-Wl,-z,now \
 			-Wl,--warn-shared-textrel \
+			-Wl,--fatal-warnings \
 			-Wl,--icf=safe \
 			$(arch_variant_ldflags)
 
-# We only need thumb interworking in cases where thumb support
-# is available in the architecture, and just to be sure, (and
-# since sometimes thumb-interwork appears to be default), we
-# specifically disable when thumb support is unavailable.
-ifeq ($(ARCH_ARM_HAVE_THUMB_SUPPORT),true)
 TARGET_GLOBAL_CFLAGS += -mthumb-interwork
-else
-TARGET_GLOBAL_CFLAGS += -mno-thumb-interwork
-endif
 
 TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 
@@ -209,6 +204,8 @@ ifneq ($(wildcard $(TARGET_CC)),)
 # any flags which affect libgcc are correctly taken
 # into account.
 TARGET_LIBGCC := $(shell $(TARGET_CC) $(TARGET_GLOBAL_CFLAGS) -print-libgcc-file-name)
+target_libgcov := $(shell $(TARGET_CC) $(TARGET_GLOBAL_CFLAGS) \
+        -print-file-name=libgcov.a)
 endif
 
 # Define FDO (Feedback Directed Optimization) options.
@@ -216,8 +213,6 @@ endif
 TARGET_FDO_CFLAGS:=
 TARGET_FDO_LIB:=
 
-target_libgcov := $(shell $(TARGET_CC) $(TARGET_GLOBAL_CFLAGS) \
-        -print-file-name=libgcov.a)
 ifneq ($(strip $(BUILD_FDO_INSTRUMENT)),)
   # Set BUILD_FDO_INSTRUMENT=true to turn on FDO instrumentation.
   # The profile will be generated on /data/local/tmp/profile on the device.
@@ -277,11 +272,6 @@ TARGET_DEFAULT_SYSTEM_SHARED_LIBRARIES := libc libstdc++ libm
 
 TARGET_CUSTOM_LD_COMMAND := true
 
-# Enable the Dalvik JIT compiler if not already specified.
-ifeq ($(strip $(WITH_JIT)),)
-    WITH_JIT := true
-endif
-
 define transform-o-to-shared-lib-inner
 $(hide) $(PRIVATE_CXX) \
 	-nostdlib -Wl,-soname,$(notdir $@) \
@@ -296,6 +286,7 @@ $(hide) $(PRIVATE_CXX) \
 	$(if $(PRIVATE_GROUP_STATIC_LIBRARIES),-Wl$(comma)--start-group) \
 	$(call normalize-target-libraries,$(PRIVATE_ALL_STATIC_LIBRARIES)) \
 	$(if $(PRIVATE_GROUP_STATIC_LIBRARIES),-Wl$(comma)--end-group) \
+	$(if $(TARGET_BUILD_APPS),$(PRIVATE_TARGET_LIBGCC)) \
 	$(call normalize-target-libraries,$(PRIVATE_ALL_SHARED_LIBRARIES)) \
 	-o $@ \
 	$(PRIVATE_TARGET_GLOBAL_LDFLAGS) \
@@ -310,10 +301,8 @@ $(hide) $(PRIVATE_CXX) -nostdlib -Bdynamic $(PIE_EXECUTABLE_TRANSFORM) \
 	-Wl,-dynamic-linker,/system/bin/linker \
 	-Wl,--gc-sections \
 	-Wl,-z,nocopyreloc \
-	-o $@ \
 	$(PRIVATE_TARGET_GLOBAL_LD_DIRS) \
 	-Wl,-rpath-link=$(TARGET_OUT_INTERMEDIATE_LIBRARIES) \
-	$(call normalize-target-libraries,$(PRIVATE_ALL_SHARED_LIBRARIES)) \
 	$(if $(filter true,$(PRIVATE_NO_CRT)),,$(PRIVATE_TARGET_CRTBEGIN_DYNAMIC_O)) \
 	$(PRIVATE_ALL_OBJECTS) \
 	-Wl,--whole-archive \
@@ -322,6 +311,9 @@ $(hide) $(PRIVATE_CXX) -nostdlib -Bdynamic $(PIE_EXECUTABLE_TRANSFORM) \
 	$(if $(PRIVATE_GROUP_STATIC_LIBRARIES),-Wl$(comma)--start-group) \
 	$(call normalize-target-libraries,$(PRIVATE_ALL_STATIC_LIBRARIES)) \
 	$(if $(PRIVATE_GROUP_STATIC_LIBRARIES),-Wl$(comma)--end-group) \
+	$(if $(TARGET_BUILD_APPS),$(PRIVATE_TARGET_LIBGCC)) \
+	$(call normalize-target-libraries,$(PRIVATE_ALL_SHARED_LIBRARIES)) \
+	-o $@ \
 	$(PRIVATE_TARGET_GLOBAL_LDFLAGS) \
 	$(PRIVATE_LDFLAGS) \
 	$(PRIVATE_TARGET_FDO_LIB) \
