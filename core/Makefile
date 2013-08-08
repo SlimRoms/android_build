@@ -1427,8 +1427,7 @@ bootzip: bootimage
 	$(BOOT_ZIP_FROM_IMAGE_SCRIPT) \
 	   $(recovery_fstab) \
 	   $(OUT) \
-	   $(TARGET_DEVICE) \
-	   $(KERNEL_PATH)
+	   $(TARGET_DEVICE)
 
 bacon: otapackage
 ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
