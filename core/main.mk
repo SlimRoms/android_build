@@ -547,7 +547,12 @@ $(foreach m,$(ALL_MODULES), \
   $(eval r := $(ALL_MODULES.$(m).REQUIRED)) \
   $(if $(r), \
     $(eval r := $(call module-installed-files,$(r))) \
-    $(eval $(call add-required-deps,$(ALL_MODULES.$(m).INSTALLED),$(r))) \
+    $(eval t_m := $(filter $(TARGET_OUT_ROOT)/%, $(ALL_MODULES.$(m).INSTALLED))) \
+    $(eval h_m := $(filter $(HOST_OUT_ROOT)/%, $(ALL_MODULES.$(m).INSTALLED))) \
+    $(eval t_r := $(filter $(TARGET_OUT_ROOT)/%, $(r))) \
+    $(eval h_r := $(filter $(HOST_OUT_ROOT)/%, $(r))) \
+    $(if $(t_m), $(eval $(call add-required-deps, $(t_m),$(t_r)))) \
+    $(if $(h_m), $(eval $(call add-required-deps, $(h_m),$(h_r)))) \
    ) \
  )
 
@@ -827,6 +832,10 @@ else # TARGET_BUILD_APPS
     $(INSTALLED_FACTORY_RAMDISK_TARGET) \
     $(INSTALLED_FACTORY_BUNDLE_TARGET) \
    )
+
+  # Put a copy of the radio/bootloader files in the dist dir.
+  $(foreach f,$(INSTALLED_RADIOIMAGE_TARGET), \
+    $(call dist-for-goals, droidcore, $(f)))
 
   ifneq ($(TARGET_BUILD_PDK),true)
     $(call dist-for-goals, droidcore, \

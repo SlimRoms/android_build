@@ -213,15 +213,15 @@ onkeyup="return search_changed(event, false, '<?cs var:toroot ?>')" />
           <div id="leftSearchControl" class="search-control">Loading...</div>
   </div>
 
+
   <?cs if:training || guide || reference || tools || develop || google ?>
     <!-- Secondary x-nav -->
     <div id="nav-x">
         <div class="wrap">
             <ul class="nav-x col-9 develop" style="width:100%">
-                <li><a href="<?cs var:toroot ?>training/index.html" <?cs
-                  if:training ?>class="selected"<?cs /if ?>
-                  zh-TW-lang="訓練課程"
-                  zh-CN-lang="培训"
+                <li class="training"><a href="<?cs var:toroot ?>training/index.html"
+                  zh-tw-lang="訓練課程"
+                  zh-cn-lang="培训"
                   ru-lang="Курсы"
                   ko-lang="교육"
                   ja-lang="トレーニング"

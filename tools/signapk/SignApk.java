@@ -378,8 +378,7 @@ class SignApk {
      * more efficient.
      */
     private static void copyFiles(Manifest manifest,
-            JarFile in, JarOutputStream out, long timestamp) throws IOException {
-
+                                  JarFile in, JarOutputStream out, long timestamp) throws IOException {
         byte[] buffer = new byte[4096];
         int num;
 
