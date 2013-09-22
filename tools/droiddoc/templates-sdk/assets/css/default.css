@@ -493,21 +493,13 @@ video.with-shadow {
     border-left:0;
     width:123px;
   }
-<<<<<<< HEAD
-      
-=======
 
->>>>>>> android-4.3_r3
   .paging-links a.disabled,
   .training-nav-top a.disabled,
   .content-footer a.disabled {
     color:#bbb;
   }
-<<<<<<< HEAD
-      
-=======
 
->>>>>>> android-4.3_r3
   .paging-links a.disabled:hover,
   .training-nav-top a.disabled:hover,
   .content-footer a.disabled:hover {
@@ -519,11 +511,7 @@ video.with-shadow {
   .training-nav-top a.start-course-link {
     width:262px;
   }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> android-4.3_r3
   /* list of classes on course landing page */
   ol.class-list {
     list-style:none;
@@ -566,11 +554,7 @@ video.with-shadow {
   ol.class-list li a.title:hover span {
     display:block;
   }
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> android-4.3_r3
   #jd-content
   ol.class-list li img {
     float:left;
@@ -598,13 +582,7 @@ video.with-shadow {
     margin:0 0 6px;
     line-height:16px;
   }
-<<<<<<< HEAD
-  
-  
-=======
 
-
->>>>>>> android-4.3_r3
   .hide {
     display:none !important;
   }
@@ -1077,11 +1055,8 @@ q {
 fieldset, iframe, img {
     border: 0;
 }
-<<<<<<< HEAD
-img { 
-=======
+
 img {
->>>>>>> android-4.3_r3
   -ms-interpolation-mode: bicubic;
   vertical-align: middle;
   max-width: 100%;
@@ -1116,11 +1091,7 @@ h1.short {
   margin-right:320px;
 }
 h1.super {
-<<<<<<< HEAD
-    font-size: 37px;  
-=======
     font-size: 37px;
->>>>>>> android-4.3_r3
 }
 h2 {
     color:#333;
@@ -1141,21 +1112,13 @@ h4 {
   font-size: 16px;
 }
 h5 {
-<<<<<<< HEAD
-  font-size: 14px;  
-=======
   font-size: 14px;
->>>>>>> android-4.3_r3
 }
 h5, h6 {
   margin: 5px 0;
 }
 h6 {
-<<<<<<< HEAD
-  font-size: 12px;  
-=======
   font-size: 12px;
->>>>>>> android-4.3_r3
 }
 hr { /* applied to the bottom of h2 elements */
   height: 1px;
@@ -1341,11 +1304,7 @@ color-stop(50%, #acbc00), color-stop(50%, #bdde00), color-stop(100%, #bdde00));
     padding: 0 24px 0 0;
 }
 .locales form {
-<<<<<<< HEAD
-    margin: 0;  
-=======
     margin: 0;
->>>>>>> android-4.3_r3
 }
 .locales select, .sites select {
   line-height: 3.08;
@@ -1441,11 +1400,7 @@ color-stop(50%, #acbc00), color-stop(50%, #bdde00), color-stop(100%, #bdde00));
   padding: 2.5em 0;
   border-top: solid 1px #ddd;
   border-bottom: solid 1px #ddd;
-<<<<<<< HEAD
-  background: #f7f7f7;  
-=======
   background: #f7f7f7;
->>>>>>> android-4.3_r3
 }
 .wrap {
   margin: 0 auto;
@@ -1571,11 +1526,7 @@ Header, Login, Nav-X, Search
   top: 24px;
   left: 0
 }
-<<<<<<< HEAD
-.search .left, .search .right { 
-=======
 .search .left, .search .right {
->>>>>>> android-4.3_r3
   height: 5px;
   width: 1px
 }
@@ -1646,11 +1597,7 @@ Header, Login, Nav-X, Search
   padding: 0
 }
 .search-dropdown ul li {
-<<<<<<< HEAD
-  clear: both 
-=======
   clear: both
->>>>>>> android-4.3_r3
 }
 .search-dropdown img {
   float: left;
@@ -1783,11 +1730,7 @@ color-stop(5%,#f9f9f9), color-stop(50%,#fafafa), color-stop(90%,#f9f9f9), color-
 endColorstr='#ffffff',GradientType=0 ); /* IE6-8 */
   -webkit-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05);
   -moz-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05);
-<<<<<<< HEAD
-  box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05); 
-=======
   box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05);
->>>>>>> android-4.3_r3
   color: #258AAF !important;
 }
 .button.big {
@@ -2080,11 +2023,7 @@ ul ul {
 }
 
 .article form .browse .browse-msg {
-<<<<<<< HEAD
-  font-size: 11.5px;  
-=======
   font-size: 11.5px;
->>>>>>> android-4.3_r3
 }
 .article form .browse .button-secondary {
   height: auto;
@@ -2099,11 +2038,7 @@ ul ul {
     color: #222;
     line-height: normal;
     padding: 6px 10px;
-<<<<<<< HEAD
-    width: 300px; 
-=======
     width: 300px;
->>>>>>> android-4.3_r3
 }
 .article form textarea {
     height: 150px;
@@ -2210,11 +2145,7 @@ pre {
   padding: 1em;
   overflow: auto;
   border: solid 1px #ddd;
-<<<<<<< HEAD
-  background: #f7f7f7;  
-=======
   background: #f7f7f7;
->>>>>>> android-4.3_r3
 }
 .str { color: #080; }
 .kwd { color: #008; }
@@ -2244,28 +2175,16 @@ Three-Pane
         height:270px;
   max-height: inherit;
   overflow: hidden;
-<<<<<<< HEAD
-  position: relative; 
-}
-#classes-nav {
-  overflow: hidden;
-  position: relative; 
-=======
   position: relative;
 }
 #classes-nav {
   overflow: hidden;
   position: relative;
->>>>>>> android-4.3_r3
 }
 #packages-nav ul, #classes-nav ul {
   list-style-type: none;
   margin: 10px 0 20px 0;
-<<<<<<< HEAD
-  padding: 0; 
-=======
   padding: 0;
->>>>>>> android-4.3_r3
 }
 #classes-nav li {
   font-weight: bold;
@@ -2283,11 +2202,7 @@ Three-Pane
 #classes-nav li li a, #classes-nav li li a:active, #classes-nav li li a:visited,
 #nav-tree li a, #nav-tree li a:active, #nav-tree li a:visited {
   color: #222;
-<<<<<<< HEAD
-  font-weight: normal;  
-=======
   font-weight: normal;
->>>>>>> android-4.3_r3
 }
 #packages-nav li a, #packages-nav li a:active, #packages-nav li a:visited,
 #classes-nav li li a, #classes-nav li li a:active, #classes-nav li li a:visited {
@@ -2410,21 +2325,13 @@ a:visited,
   margin-right:0;
 }
 #doc-content-container {
-<<<<<<< HEAD
-  margin-left: 291px  
-=======
   margin-left: 291px
->>>>>>> android-4.3_r3
 }
 #doc-header, #doc-content {
   padding: 1em 2em;
 }
 #doc-header {
-<<<<<<< HEAD
-  background: #f7f7f7;  
-=======
   background: #f7f7f7;
->>>>>>> android-4.3_r3
 }
 #doc-header h1 {
   line-height: 0;
@@ -2557,11 +2464,7 @@ cursor: e-resize; width: 10px; right: 0; top: 0; height: 100%; border-right: sol
 /* --------------------------------------------------------------------------
 Lightbox
 */
-<<<<<<< HEAD
-.lightbox { 
-=======
 .lightbox {
->>>>>>> android-4.3_r3
   width: 769px;
   padding: 1.5em;
   margin: 0 auto;
@@ -2574,11 +2477,7 @@ Lightbox
 .lightbox .header {
   float: left;
   width: 720px;
-<<<<<<< HEAD
-  margin: -10px 20px 10px 0;  
-=======
   margin: -10px 20px 10px 0;
->>>>>>> android-4.3_r3
 }
 .lightbox .close {
   float: right;
@@ -2600,7 +2499,6 @@ Butterbar
   top:0;
   left:0;
   width:100%;
-<<<<<<< HEAD
 }
 #butterbar {
   width:940px;
@@ -2614,21 +2512,6 @@ Butterbar
   padding:0 10px;
   border-radius: 0 0 5px 5px;
 }
-=======
-}
-#butterbar {
-  width:940px;
-  margin:0 auto;
-}
-#butterbar-message {
-  background-color:#f80;
-  float:right;
-  font-size:12px;
-  font-weight:bold;
-  padding:0 10px;
-  border-radius: 0 0 5px 5px;
-}
->>>>>>> android-4.3_r3
 #butterbar-message a {color:#fff !important}
 #butterbar-message a:hover {text-decoration:underline;}
 
@@ -2654,11 +2537,7 @@ table.blank th, table.blank td {
 .caption {
   margin: 0.5em 0 2em 0;
   color: #000;
-<<<<<<< HEAD
-  font-size: 11.5px;  
-=======
   font-size: 11.5px;
->>>>>>> android-4.3_r3
 }
 
 .nolist {
@@ -2717,11 +2596,7 @@ p.table-caption {
 }
 
 p.code-caption {
-<<<<<<< HEAD
-  margin: 0 0 4px 0;
-=======
   margin-bottom: 4px;
->>>>>>> android-4.3_r3
   font: 12px/1.5 monospace;
   color:#666;
 }
@@ -2831,10 +2706,7 @@ div.design-announce p {
 a.notice-developers,
 a.notice-designers {
   float:right;
-<<<<<<< HEAD
-=======
   clear:right;
->>>>>>> android-4.3_r3
   width:238px;
   min-height:50px;
   margin:0 0 20px 20px;
@@ -2891,48 +2763,6 @@ a.header-toggle {
 }
 
 
-<<<<<<< HEAD
-/* -----------------------------------------------
-good/bad example containers 
-*/
-
-div.example-block {
-  background-repeat: no-repeat;
-  background-position:10px 8px; 
-  background-color:#ccc;
-  padding:4px;
-  margin:.8em auto 1.5em 2em;
-  width:260px;
-  float:right;
-}
-/* red container */
-.example-block.bad {
-  background-image: url(/images/example-bad.png);
-  background-color:#f4cccc;
-}
-/* green container */
-.example-block.good {
-  background-image: url(/images/example-good.png);
-  background-color:#d9ead3;
-}
-/* container heading div */
-#jd-content .example-block .heading {
-  font-weight:bold;
-  margin:6px 0 9px 36px;
-  padding:6px auto;
-}
-/* container image (if any) */
-#jd-content .example-block img {
-  margin:0;
-  padding:0px;
-}
-
-.example-block table {
-  margin:0;
-}
-
-=======
->>>>>>> android-4.3_r3
 /* -----------------------------------------------
 good/bad example containers
 */
@@ -3041,11 +2871,7 @@ div#naMessage strong {
 /* --------------------------------------------------------------------------
 Slideshow Controls & Next/Prev
 */
-<<<<<<< HEAD
-.slideshow-next, .slideshow-prev {  
-=======
 .slideshow-next, .slideshow-prev {
->>>>>>> android-4.3_r3
   width: 20px;
   height: 36px;
   text-indent: -1000em;
@@ -3068,11 +2894,7 @@ a.slideshow-next, a.slideshow-next:visited {
 
 a.slideshow-prev, a.slideshow-prev:visited {
 
-<<<<<<< HEAD
-  float: left;  
-=======
   float: left;
->>>>>>> android-4.3_r3
 
   background: url(../images/arrow-left.png) no-repeat 0 0
 
@@ -3080,30 +2902,18 @@ a.slideshow-prev, a.slideshow-prev:visited {
 
 .slideshow-next:hover, .slideshow-prev:hover, .slideshow-next:focus, .slideshow-prev:focus {
 
-<<<<<<< HEAD
-  background-position: 0 -36px  
-=======
   background-position: 0 -36px
->>>>>>> android-4.3_r3
 
 }
 
 .slideshow-next:active, .slideshow-prev:active {
 
-<<<<<<< HEAD
-  background-position: 0 -72px  
-=======
   background-position: 0 -72px
->>>>>>> android-4.3_r3
 
 }
 .slideshow-nav {
   width: 74px;
-<<<<<<< HEAD
-  margin: 0 auto;   
-=======
   margin: 0 auto;
->>>>>>> android-4.3_r3
 }
 .slideshow-nav a, .slideshow-nav a:visited {
   display: inline-block;
@@ -3123,11 +2933,7 @@ a.slideshow-prev, a.slideshow-prev:visited {
 .slideshow-nav a:active {
 
   background: #1e799a;
-<<<<<<< HEAD
-  background: #ebebeb;  
-=======
   background: #ebebeb;
->>>>>>> android-4.3_r3
   -webkit-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05);
   -moz-box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05);
   box-shadow: inset 0px 0px 5px 2px rgba(0, 0, 0, .05);
@@ -3140,11 +2946,7 @@ Tabs
 */
 ul.tabs {
   padding: 0;
-<<<<<<< HEAD
-  margin: 2em 0 0 0;  
-=======
   margin: 2em 0 0 0;
->>>>>>> android-4.3_r3
 }
 ul.tabs:before, ul.tabs:after {
   content: "";
@@ -3153,11 +2955,7 @@ ul.tabs:before, ul.tabs:after {
 }
 ul.tabs li {
   list-style-type: none;
-<<<<<<< HEAD
-  float: left;  
-=======
   float: left;
->>>>>>> android-4.3_r3
 }
 ul.tabs li a, ul.tabs li a:active, ul.tabs li a:visited {
   display: block;
@@ -3171,11 +2969,7 @@ ul.tabs li a, ul.tabs li a:active, ul.tabs li a:visited {
   -moz-border-radius-bottomright: px;
   -moz-border-radius-bottomleft: px;
   -webkit-border-radius: 2px 2px px px;
-<<<<<<< HEAD
-  border-radius: 2px 2px px px; 
-=======
   border-radius: 2px 2px px px;
->>>>>>> android-4.3_r3
   border-top: solid 1px #ebebeb;
   border-left: solid 1px #ebebeb;
   border-right: solid 1px #ebebeb;
@@ -3190,11 +2984,7 @@ ul.tabs li a, ul.tabs li a:active, ul.tabs li a:visited {
 EndColorStr='#fafafa');
 }
 ul.tabs li a:hover {
-<<<<<<< HEAD
-  color: #33B5E5; 
-=======
   color: #33B5E5;
->>>>>>> android-4.3_r3
 }
 ul.tabs li a.selected {
   height: 37px;
@@ -3233,15 +3023,9 @@ Feature Boxes
 .dialog .box-border .top,
 .dialog .box-border .bottom { width:391px; }
 
-<<<<<<< HEAD
-.box-border .left, .box-border .right { 
-  width: 1px;
-  height: 8px;    
-=======
 .box-border .left, .box-border .right {
   width: 1px;
   height: 8px;
->>>>>>> android-4.3_r3
 }
 .box-border .top { top: 0; left: 0 }
 .box-border .top .left { top: 1px; left: 0 }
@@ -3276,17 +3060,10 @@ Feature Boxes
     transition: color .4s ease;
 }
 .feature-box:hover {
-<<<<<<< HEAD
-  cursor: pointer;  
-}
-.feature-box:hover .box-border .top, .feature-box:hover .box-border .bottom, .feature-box:hover
-.left, .feature-box:hover .right {  
-=======
   cursor: pointer;
 }
 .feature-box:hover .box-border .top, .feature-box:hover .box-border .bottom, .feature-box:hover
 .left, .feature-box:hover .right {
->>>>>>> android-4.3_r3
   background-color: #33B5E5;
 }
 .feature-box:hover h4, .feature-box:hover a {
@@ -3295,11 +3072,7 @@ Feature Boxes
 /* --------------------------------------------------------------------------
 Page-Specific Styles
 */
-<<<<<<< HEAD
-.colors { 
-=======
 .colors {
->>>>>>> android-4.3_r3
   position: relative;
   float: left;
   width: 92px;
@@ -3718,11 +3491,7 @@ ul.search_filtered {
   font-size:0.85em;
 }
 
-<<<<<<< HEAD
-.suggest-card.reference 
-=======
 .suggest-card.reference
->>>>>>> android-4.3_r3
 .search_filtered li.header {
   color:#aaa;
   font-size: 0.81em;
@@ -4188,11 +3957,7 @@ EndColorStr='#ececec');
   left: 0
 }
 
-<<<<<<< HEAD
-.search .left, .search .right { 
-=======
 .search .left, .search .right {
->>>>>>> android-4.3_r3
   height: 5px;
   width: 1px
 }
@@ -4218,17 +3983,10 @@ EndColorStr='#ececec');
 .search form input {
   color: #2f2f2f;
   font-size: 0.95em;
-<<<<<<< HEAD
-  width: 178px;  
-  border: none;
-  margin-left: 6px;  
-  z-index: 1500;  
-=======
   width: 178px;
   border: none;
   margin-left: 6px;
   z-index: 1500;
->>>>>>> android-4.3_r3
   position: relative;
   background-color: transparent;
   border-bottom:1px solid #CCC;
@@ -4312,11 +4070,7 @@ EndColorStr='#ececec');
   -o-transition-property: -o-opacity;
   -o-transition-duration: .25s;
   -o-transition-timing-function:ease;
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> android-4.3_r3
   transition-property: opacity;
   transition-duration: .25s;
   transition-timing-function:ease;
@@ -4414,15 +4168,9 @@ EndColorStr='#ececec');
   border-radius:6px;
   background-color:#ccc;
   cursor:pointer;
-<<<<<<< HEAD
-        -webkit-transition:color .5s ease-in;  
-        -moz-transition:color .5s ease-in;  
-        -o-transition:color .5s ease-in;  
-=======
         -webkit-transition:color .5s ease-in;
         -moz-transition:color .5s ease-in;
         -o-transition:color .5s ease-in;
->>>>>>> android-4.3_r3
         transition:color .5s ease-in;
 }
 .slideshow-container .pagination ul li:hover {
@@ -4557,12 +4305,7 @@ a.download-sdk {
   background-image: -moz-linear-gradient(left, #5dbcd9, #4cadcb);
   background-image: -ms-linear-gradient(left, #5dbcd9, #4cadcb);
   background-image: -o-linear-gradient(left, #5dbcd9, #4cadcb);
-  background-image: linear-gradient(left, #5dbcd9, #4cadcb);
-<<<<<<< HEAD
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#5dbcd9', EndColorStr='#4cadcb'); 
-=======
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#5dbcd9', EndColorStr='#4cadcb');
->>>>>>> android-4.3_r3
+  background-image: linear-gradient(left, #5dbcd9, #4cadcb);crosoft.gradient(startColorStr='#5dbcd9', EndColorStr='#4cadcb');
 }
 
 .jspHorizontalBar .jspTrack,
