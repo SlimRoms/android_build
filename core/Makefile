@@ -1553,10 +1553,14 @@ endif
 BOOT_ZIP_FROM_IMAGE_SCRIPT := ./build/tools/releasetools/boot_flash_from_image
 KERNEL_PATH := $(TARGET_KERNEL_SOURCE)/arch/arm/configs/$(TARGET_KERNEL_CONFIG)
 
+ifeq ($(WITH_GMS),true)
+    $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
+else
 ifneq ($(SLIM_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false   # disabled for now
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
+endif
 endif
 
 ifeq ($(TARGET_UNIFIED_DEVICE),)
