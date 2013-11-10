@@ -39,7 +39,6 @@ PRODUCT_PACKAGES := \
     OneTimeInitializer \
     PrintSpooler \
     Provision \
-    QuickSearchBox \
     Settings \
     SystemUI \
     TeleService \
