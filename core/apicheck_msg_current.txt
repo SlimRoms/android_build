@@ -1,5 +1,5 @@
 
-******************************
+*******************************
 You have tried to change the API from what has been previously approved.
 
 To make these errors go away, you have two choices:
@@ -11,7 +11,7 @@ To make these errors go away, you have two choices:
 
       To submit the revised current.txt to the main Android repository,
       you will need approval.
-******************************
+*******************************
 
 
 
