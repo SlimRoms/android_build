@@ -179,9 +179,9 @@ include $(BUILD_SYSTEM)/node_fns.mk
 include $(BUILD_SYSTEM)/product.mk
 include $(BUILD_SYSTEM)/device.mk
 
-# A CM build needs only the CM product makefiles.
+# A SLIM build needs only the SLIM product makefiles.
 ifneq ($(SLIM_BUILD),)
-  all_product_configs := $(shell ls device/*/$(SLIM_BUILD)/cm.mk)
+  all_product_configs := $(shell find device -path "*/$(SLIM_BUILD)/slim.mk")
 else
   ifneq ($(strip $(TARGET_BUILD_APPS)),)
   # An unbundled app build needs only the core product makefiles.
