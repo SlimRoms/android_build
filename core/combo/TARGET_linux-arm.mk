@@ -68,8 +68,32 @@ endif
 
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
-ifeq ($(TARGET_USE_O3),true)
+ifeq ($(TARGET_USE_O_LEVEL_S),true)
+TARGET_arm_CFLAGS :=    -Os \
+                        -fomit-frame-pointer \
+                        -fstrict-aliasing    \
+                        -funswitch-loops
+
+# Modules can choose to compile some source as thumb.
+TARGET_thumb_CFLAGS :=  -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing
+
+else ifeq ($(TARGET_USE_O_LEVEL_3),true)
 TARGET_arm_CFLAGS :=    -O3 \
+                        -fomit-frame-pointer \
+                        -fstrict-aliasing    \
+                        -funswitch-loops
+
+# Modules can choose to compile some source as thumb.
+TARGET_thumb_CFLAGS :=  -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing
+
+else
+TARGET_arm_CFLAGS :=    -O2 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
@@ -86,23 +110,10 @@ TARGET_arm_CFLAGS :=    -Os \
 endif
 
 # Modules can choose to compile some source as thumb.
-ifeq ($(TARGET_USE_O3),true)
-    TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O3 \
-                            -fomit-frame-pointer \
-                            -fno-strict-aliasing \
-                            -Wstrict-aliasing=2 \
-                            -Werror=strict-aliasing \
-                            -fno-tree-vectorize \
-                            -funsafe-math-optimizations \
-                            -Wno-unused-parameter \
-                            -Wno-unused-value \
-                            -Wno-unused-function
-else
-    TARGET_thumb_CFLAGS :=  -mthumb \
-                            -Os \
-                            -fomit-frame-pointer \
-                            -fno-strict-aliasing
+TARGET_thumb_CFLAGS :=  -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing
 endif
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
