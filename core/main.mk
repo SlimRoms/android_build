@@ -415,6 +415,24 @@ endif
 ifeq ($(MAKECMDGOALS),magicbrownies)
 dont_bother := true
 endif
+ifeq ($(MAKECMDGOALS),appclean)
+dont_bother := true
+endif
+ifeq ($(MAKECMDGOALS),imgclean)
+dont_bother := true
+endif
+ifeq ($(MAKECMDGOALS),kernelclean)
+dont_bother := true
+endif
+ifeq ($(MAKECMDGOALS),systemclean)
+dont_bother := true
+endif
+ifeq ($(MAKECMDGOALS),recoveryclean)
+dont_bother := true
+endif
+ifeq ($(MAKECMDGOALS),rootclean)
+dont_bother := true
+endif
 ifeq ($(MAKECMDGOALS),dataclean)
 dont_bother := true
 endif
@@ -942,6 +960,46 @@ novo:
 magicbrownies:
 	@rm -rf $(OUT_DIR)/target/product/*
 	@echo -e ${CL_GRN}"Enjoy your magical adventure!"${CL_RST}
+
+# Clears out all apks
+.PHONY: appclean
+appclean:
+	@rm -rf $(OUT_DIR)/target/product/*/system/app
+	@rm -rf $(OUT_DIR)/target/product/*/system/priv-app
+	@echo -e ${CL_GRN}"All apks erased"${CL_RST}
+
+# Clears out all .img files
+.PHONY: imgclean
+imgclean:
+	@rm -rf $(OUT_DIR)/target/product/*/*.img
+	@echo -e ${CL_GRN}"All .img files erased"${CL_RST}
+
+# Clears out all kernel stuff
+.PHONY: kernelclean
+kernelclean:
+	@rm -rf $(OUT_DIR)/target/product/*/kernel
+	@rm -rf $(OUT_DIR)/target/product/*/boot.img
+	@echo -e ${CL_GRN}"All kernel compnents erased"${CL_RST}
+
+# Clears out all system stuff
+.PHONY: systemclean
+systemclean:
+	@rm -rf $(OUT_DIR)/target/product/*/system/
+	@rm -rf $(OUT_DIR)/target/product/*/system.img
+	@echo -e ${CL_GRN}"System components erased"${CL_RST}
+
+# Clears out all recovery stuff
+.PHONY: recoveryclean
+recoveryclean:
+	@rm -rf $(OUT_DIR)/target/product/*/recovery/
+	@rm -rf $(OUT_DIR)/target/product/*/recovery.img
+	@echo -e ${CL_GRN}"All recovery components erased"${CL_RST}
+
+# Clears out all root stuff
+.PHONY: rootclean
+rootclean:
+	@rm -rf $(OUT_DIR)/target/product/*/root/
+	@echo -e ${CL_GRN}"All root components erased"${CL_RST}
 
 # The rules for dataclean and installclean are defined in cleanbuild.mk.
 
