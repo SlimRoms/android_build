@@ -415,6 +415,9 @@ endif
 ifeq ($(MAKECMDGOALS),magicbrownies)
 dont_bother := true
 endif
+ifeq ($(MAKECMDGOALS),dirty)
+dont_bother := true
+endif
 ifeq ($(MAKECMDGOALS),appclean)
 dont_bother := true
 endif
@@ -961,6 +964,14 @@ magicbrownies:
 	@rm -rf $(OUT_DIR)/target/product/*
 	@echo -e ${CL_GRN}"Enjoy your magical adventure!"${CL_RST}
 
+# Clears out zip and build.prop
+.PHONY: dirty
+dirty:
+	@rm -rf $(OUT_DIR)/target/product/*/system/build.prop
+	@rm -rf $(OUT_DIR)/target/product/*/*.zip
+	@rm -rf $(OUT_DIR)/target/product/*/*.md5sum
+	@echo -e ${CL_GRN}"OOOOOOH, I like it dirty!"${CL_RST}
+
 # Clears out all apks
 .PHONY: appclean
 appclean:
@@ -979,7 +990,7 @@ imgclean:
 kernelclean:
 	@rm -rf $(OUT_DIR)/target/product/*/kernel
 	@rm -rf $(OUT_DIR)/target/product/*/boot.img
-	@echo -e ${CL_GRN}"All kernel compnents erased"${CL_RST}
+	@echo -e ${CL_GRN}"All kernel components erased"${CL_RST}
 
 # Clears out all system stuff
 .PHONY: systemclean
