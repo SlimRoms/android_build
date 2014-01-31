@@ -14,12 +14,12 @@
 # limitations under the License.
 #
 
-######################################################################
+#######################################################################
 # This is a do-nothing template file.  To use it, copy it to a file
 # named "buildspec.mk" in the root directory, and uncomment or change
 # the variables necessary for your desired configuration.  The file
 # "buildspec.mk" should never be checked in to source control.
-######################################################################
+#######################################################################
 
 # Choose a product to build for.  Look in the products directory for ones
 # that work.
