@@ -61,7 +61,6 @@ $(combo_target)RELEASE_CFLAGS := -O2 -g -fno-strict-aliasing
 endif
 
 $(combo_target)GLOBAL_LDFLAGS :=
-endif
 $(combo_target)GLOBAL_ARFLAGS := crsP
 
 $(combo_target)EXECUTABLE_SUFFIX :=

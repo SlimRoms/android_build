@@ -1446,13 +1446,6 @@ bootzip: bootimage
 	   $(TARGET_DEVICE)
 
 bacon: otapackage
-ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
-	@echo -e ${CL_YLW}"Running custom releasetool..."${CL_RST}
-	$(hide) OTAPACKAGE=$(INTERNAL_OTA_PACKAGE_TARGET) APKCERTS=$(APKCERTS_FILE) $(TARGET_CUSTOM_RELEASETOOL)
-else
-	@echo -e ${CL_YLW}"Running releasetool..."${CL_RST}
-	$(hide) OTAPACKAGE=$(INTERNAL_OTA_PACKAGE_TARGET) APKCERTS=$(APKCERTS_FILE) ./vendor/ose/tools/squisher
-endif
 
 # -----------------------------------------------------------------
 # The update package
