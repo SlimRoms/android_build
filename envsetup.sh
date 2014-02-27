@@ -62,7 +62,7 @@ function check_product()
     fi
 
     if (echo -n $1 | grep -q -e "^ose_") ; then
-       OSE_BUILD=$(echo -n $1 | sed -e 's/^_//g')
+       OSE_BUILD=$(echo -n $1 | sed -e 's/^ose_//g')
     else
        OSE_BUILD=
     fi
