@@ -197,6 +197,7 @@ $(INSTALLED_BUILD_PROP_TARGET): $(BUILDINFO_SH) $(INTERNAL_BUILD_ID_MAKEFILE) $(
 			TARGET_CPU_ABI="$(TARGET_CPU_ABI)" \
 			TARGET_CPU_ABI2="$(TARGET_CPU_ABI2)" \
 			TARGET_AAPT_CHARACTERISTICS="$(TARGET_AAPT_CHARACTERISTICS)" \
+			TARGET_UNIFIED_DEVICE="$(TARGET_UNIFIED_DEVICE)" \
                         $(PRODUCT_BUILD_PROP_OVERRIDES) \
 	        bash $(BUILDINFO_SH) > $@
 	$(hide) $(foreach file,$(system_prop_file), \
@@ -1420,7 +1421,7 @@ else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 endif
 
-ifeq ($(TARGET_INIT_VENDOR_LIB),)
+ifeq ($(TARGET_UNIFIED_DEVICE),)
     $(INTERNAL_OTA_PACKAGE_TARGET): override_prop := false
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): override_prop := true
@@ -1433,7 +1434,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
 	   --backup=$(backuptool) \
-	   --override_device=$(override_device) \
 	   --override_prop=$(override_prop) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
