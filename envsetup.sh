@@ -599,8 +599,6 @@ function lunch()
         export PRODUCT_PREBUILT_WEBVIEWCHROMIUM=""
     fi
 
-    fixup_common_out_dir
-
     set_stuff_for_environment
     printconfig
 
