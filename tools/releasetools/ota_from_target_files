@@ -715,7 +715,7 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
     if d is None or len(d) > tf.size * OPTIONS.patch_threshold or \
         path not in known_paths:
       # patch is almost as big as the file; don't bother patching
-      # or a patch + rename cannot take place due to the target 
+      # or a patch + rename cannot take place due to the target
       # directory not existing
       tf.AddToZip(output_zip)
       verbatim_targets.append((tf.name, tf.size))
