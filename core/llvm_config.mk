@@ -18,6 +18,10 @@ CLANG_CONFIG_EXTRA_CFLAGS := \
 
 CLANG_CONFIG_UNKNOWN_CFLAGS := \
   -funswitch-loops
+  -Wstrict-aliasing=3 \
+  -fno-toplevel-reorder \
+  -flto-compression-level=5 \
+  -fuse-linker-plugin  
 
 ifeq ($(TARGET_ARCH),arm)
   RS_TRIPLE := armv7-none-linux-gnueabi
