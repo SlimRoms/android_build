@@ -1,73 +1,134 @@
 #!/usr/bin/env python
-# Copyright (C) 2012 The CyanogenMod Project
-# Copyright (C) 2012/2013 SlimRoms Project
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
-import os
-import sys
-import urllib2
+# Copyright (C) 2013 Cybojenix <anthonydking@gmail.com>
+# Copyright (C) 2013 The OmniROM Project
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
 import json
-import re
-from xml.etree import ElementTree
-
-product = sys.argv[1];
-
-if len(sys.argv) > 2:
-    depsonly = sys.argv[2]
-else:
-    depsonly = None
-
+import sys
+import os
+from xml.etree import ElementTree as ES
+# Use the urllib importer from the Cyanogenmod roomservice
 try:
-    device = product[product.index("_") + 1:]
-except:
-    device = product
+    # For python3
+    import urllib.request
+except ImportError:
+    # For python2
+    import imp
+    import urllib2
+    urllib = imp.new_module('urllib')
+    urllib.request = urllib2
 
-if not depsonly:
-    print "Device %s not found. Attempting to retrieve device repository from SlimRoms Github (http://github.com/SlimRoms)." % device
+# Config
+# set this to the default remote to use in repo
+default_rem = "ose"
+# set this to the default revision to use (branch/tag name)
+default_rev = "ose"
+# set this to the remote that you use for projects from your team repos
+# example fetch="https://github.com/omnirom"
+default_team_rem = "gh"
+# this shouldn't change unless google makes changes
+local_manifest_dir = ".repo/local_manifests"
+# change this to your name on github (or equivalent hosting)
+android_team = "Team-OSE"
 
-repositories = []
 
-page = 1
-while not depsonly:
-    result = json.loads(urllib2.urlopen("https://api.github.com/users/SlimRoms/repos?page=%d" % page).read())
-    if len(result) == 0:
-        break
-    for res in result:
-        repositories.append(res)
-    page = page + 1
+def check_repo_exists(git_data):
+    if not int(git_data.get('total_count', 0)):
+        raise Exception("{} not found in {} Github, exiting "
+                        "roomservice".format(device, android_team))
 
-local_manifests = r'.repo/local_manifests'
-if not os.path.exists(local_manifests): os.makedirs(local_manifests)
 
-def exists_in_tree(lm, repository):
-    for child in lm.getchildren():
-        if child.attrib['path'].endswith(repository):
-            return child
-    return None
+# Note that this can only be done 5 times per minute
+def search_github_for_device(device):
+    git_search_url = "https://api.github.com/search/repositories" \
+                     "?q=%40{}+device+{}+fork:true".format(android_team, device)
+    git_req = urllib.request.Request(git_search_url)
+    # this api is a preview at the moment. accept the custom media type
+    git_req.add_header('Accept', 'application/vnd.github.preview')
+    try:
+        response = urllib.request.urlopen(git_req)
+    except urllib.request.HTTPError:
+        raise Exception("There was an issue connecting to github."
+                        " Please try again in a minute")
+    git_data = json.load(response)
+    check_repo_exists(git_data)
+    print("found the {} device repo".format(device))
+    return git_data
 
-def exists_in_tree_device(lm, repository):
-    for child in lm.getchildren():
-        if child.attrib['name'].endswith(repository):
-            return child
-    return None
 
-# in-place prettyprint formatter
+def get_device_url(git_data):
+    device_url = ""
+    for item in git_data['items']:
+        temp_url = item.get('html_url')
+        if "{}/device".format(android_team) in temp_url:
+            try:
+                temp_url = temp_url[temp_url.index("device"):]
+            except ValueError:
+                pass
+            else:
+                if temp_url.endswith(device):
+                    device_url = temp_url
+                    break
+
+    if device_url:
+        return "{}/{}".format(android_team, device_url)
+    raise Exception("{} not found in {} Github, exiting "
+                    "roomservice".format(device, android_team))
+
+
+def parse_device_directory(device_url,device):
+    to_strip = "device"
+    repo_name = device_url[device_url.index(to_strip) + len(to_strip):]
+    repo_name = repo_name[:repo_name.index(device)]
+    repo_dir = repo_name.replace("_", "/")
+    repo_dir = repo_dir + device
+    return "device{}".format(repo_dir)
+
+
+# Thank you RaYmAn
+def iterate_manifests():
+    files = []
+    for file in os.listdir(local_manifest_dir):
+        files.append(os.path.join(local_manifest_dir, file))
+    files.append('.repo/manifest.xml')
+    for file in files:
+        try:
+            man = ES.parse(file)
+            man = man.getroot()
+        except IOError, ES.ParseError:
+            print("WARNING: error while parsing %s" % file)
+        else:
+            for project in man.findall("project"):
+                yield project
+
+
+def check_project_exists(url):
+    for project in iterate_manifests():
+        if project.get("name") == url:
+            return True
+    return False
+
+
+# Use the indent function from http://stackoverflow.com/a/4590052
 def indent(elem, level=0):
-    i = "\n" + level*"  "
+    i = ''.join(["\n", level*"  "])
     if len(elem):
         if not elem.text or not elem.text.strip():
-            elem.text = i + "  "
+            elem.text = ''.join([i, "  "])
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
         for elem in elem:
@@ -78,171 +139,159 @@ def indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
-def get_from_manifest(devicename):
+
+def create_manifest_project(url, directory,
+                            remote=default_rem,
+                            revision=default_rev):
+    project_exists = check_project_exists(url)
+
+    if project_exists:
+        return None
+
+    project = ES.Element("project",
+                         attrib={
+                             "path": directory,
+                             "name": url,
+                             "remote": remote,
+                             "revision": revision
+                         })
+    return project
+
+
+def append_to_manifest(project):
     try:
-        lm = ElementTree.parse(".repo/local_manifests/slim_manifest.xml")
+        lm = ES.parse('/'.join([local_manifest_dir, "roomservice.xml"]))
         lm = lm.getroot()
-    except:
-        lm = ElementTree.Element("manifest")
+    except IOError, ES.ParseError:
+        lm = ES.Element("manifest")
+    lm.append(project)
+    return lm
 
-    for localpath in lm.findall("project"):
-        if re.search("device_.*_%s$" % device, localpath.get("name")):
-            return localpath.get("path")
 
-    # Devices originally from AOSP are in the main manifest...
-    try:
-        mm = ElementTree.parse(".repo/manifest.xml")
-        mm = mm.getroot()
-    except:
-        mm = ElementTree.Element("manifest")
+def write_to_manifest(manifest):
+    indent(manifest)
+    raw_xml = ES.tostring(manifest).decode()
+    raw_xml = ''.join(['<?xml version="1.0" encoding="UTF-8"?>\n'
+                       '<!--Please do not manually edit this file-->\n',
+                       raw_xml])
 
-    for localpath in mm.findall("project"):
-        if re.search("device_.*_%s$" % device, localpath.get("name")):
-            return localpath.get("path")
+    with open('/'.join([local_manifest_dir, "roomservice.xml"]), 'w') as f:
+        f.write(raw_xml)
+    print("Written to local device manifests")
 
+
+def parse_device_from_manifest(device):
+    for project in iterate_manifests():
+        name = project.get('name')
+        if name.startswith("device_") and name.endswith(device):
+            return project.get('path')
     return None
 
-def is_in_manifest(projectname, branch):
-    try:
-        lm = ElementTree.parse(".repo/local_manifests/slim_manifest.xml")
-        lm = lm.getroot()
-    except:
-        lm = ElementTree.Element("manifest")
 
-    for localpath in lm.findall("project"):
-        if localpath.get("name") == projectname and localpath.get("revision") == branch:
-            return 1
-
-    return None
-
-def add_to_manifest_dependencies(repositories):
-    try:
-        lm = ElementTree.parse(".repo/local_manifests/slim_manifest.xml")
-        lm = lm.getroot()
-    except:
-        lm = ElementTree.Element("manifest")
-
-    for repository in repositories:
-        repo_name = repository['repository']
-        repo_target = repository['target_path']
-        existing_project = exists_in_tree(lm, repo_target)
-        if existing_project != None:
-            if existing_project.attrib['name'] != repository['repository']:
-                print 'Updating dependency %s' % (repo_name)
-                existing_project.set('name', repository['repository'])
-            if existing_project.attrib['revision'] == repository['branch']:
-                print 'SlimRoms/%s already exists' % (repo_name)
-            else:
-                print 'updating branch for %s to %s' % (repo_name, repository['branch'])
-                existing_project.set('revision', repository['branch'])
-            continue
-
-        print 'Adding dependency: %s -> %s' % (repo_name, repo_target)
-        project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "github", "name": repo_name, "revision": "kk4.4" })
-
-        if 'branch' in repository:
-            project.set('revision',repository['branch'])
-
-        lm.append(project)
-
-    indent(lm, 0)
-    raw_xml = ElementTree.tostring(lm)
-    raw_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + raw_xml
-
-    f = open('.repo/local_manifests/slim_manifest.xml', 'w')
-    f.write(raw_xml)
-    f.close()
-
-def add_to_manifest(repositories):
-    try:
-        lm = ElementTree.parse(".repo/local_manifests/slim_manifest.xml")
-        lm = lm.getroot()
-    except:
-        lm = ElementTree.Element("manifest")
-
-    for repository in repositories:
-        repo_name = repository['repository']
-        repo_target = repository['target_path']
-        existing_project = exists_in_tree_device(lm, repo_name)
-        if existing_project != None:
-            if existing_project.attrib['revision'] == repository['branch']:
-                print 'SlimRoms/%s already exists' % (repo_name)
-            else:
-                print 'updating branch for SlimRoms/%s to %s' % (repo_name, repository['branch'])
-                existing_project.set('revision', repository['branch'])
-            continue
-
-        print 'Adding dependency: SlimRoms/%s -> %s' % (repo_name, repo_target)
-        project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "github", "name": "SlimRoms/%s" % repo_name, "revision": "kk4.4" })
-
-        if 'branch' in repository:
-            project.set('revision', repository['branch'])
-
-        lm.append(project)
-
-    indent(lm, 0)
-    raw_xml = ElementTree.tostring(lm)
-    raw_xml = '<?xml version="1.0" encoding="UTF-8"?>\n' + raw_xml
-
-    f = open('.repo/local_manifests/slim_manifest.xml', 'w')
-    f.write(raw_xml)
-    f.close()
-
-def fetch_dependencies(repo_path):
-    print 'Looking for dependencies'
-    dependencies_path = repo_path + '/slim.dependencies'
-    syncable_repos = []
-
-    if os.path.exists(dependencies_path):
-        dependencies_file = open(dependencies_path, 'r')
-        dependencies = json.loads(dependencies_file.read())
-        fetch_list = []
-
-        for dependency in dependencies:
-            if not is_in_manifest("%s" % dependency['repository'], "%s" % dependency['branch']):
-                fetch_list.append(dependency)
-                syncable_repos.append(dependency['target_path'])
-
-        dependencies_file.close()
-
-        if len(fetch_list) > 0:
-            print 'Adding dependencies to manifest'
-            add_to_manifest_dependencies(fetch_list)
+def parse_device_from_folder(device):
+    search = []
+    for sub_folder in os.listdir("device"):
+        if os.path.isdir("device/%s/%s" % (sub_folder, device)):
+            search.append("device/%s/%s" % (sub_folder, device))
+    if len(search) > 1:
+        print("multiple devices under the name %s. "
+              "defaulting to checking the manifest" % device)
+        location = parse_device_from_manifest(device)
+    elif len(search) == 1:
+        location = search[0]
     else:
-        print 'Dependencies file not found, bailing out.'
+        print("Your device was not found. Attempting to retrieve device repository from Team-OSE Github..")
+        location = parse_device_from_manifest(device)
+    return location
 
-    if len(syncable_repos) > 0:
-        print 'Syncing dependencies'
-        os.system('repo sync %s' % ' '.join(syncable_repos))
 
-if depsonly:
-    repo_path = get_from_manifest(device)
-    if repo_path:
-        fetch_dependencies(repo_path)
+def parse_dependency_file(location):
+    dep_file = "ose.dependencies"
+    dep_location = '/'.join([location, dep_file])
+    if not os.path.isfile(dep_location):
+        print("WARNING: %s file not found" % dep_location)
+        sys.exit()
+    try:
+        with open(dep_location, 'r') as f:
+            dependencies = json.loads(f.read())
+    except ValueError:
+        raise Exception("ERROR: malformed dependency file")
+    return dependencies
+
+
+def create_dependency_manifest(dependencies):
+    projects = []
+    for dependency in dependencies:
+        repository = dependency.get("repository")
+        target_path = dependency.get("target_path")
+        revision = dependency.get("revision", default_rev)
+        remote = dependency.get("remote", default_rem)
+
+        # not adding an organization should default to android_team
+        # only apply this to github
+        if remote == "github":
+            if not "/" in repository:
+                repository = '/'.join([android_team, repository])
+        project = create_manifest_project(repository,
+                                          target_path,
+                                          remote=remote,
+                                          revision=revision)
+        if not project is None:
+            manifest = append_to_manifest(project)
+            write_to_manifest(manifest)
+            projects.append(target_path)
+    if len(projects) > 0:
+        os.system("repo sync -f --no-clone-bundle %s" % " ".join(projects))
+
+
+def fetch_dependencies(device):
+    location = parse_device_from_folder(device)
+    if location is None or not os.path.isdir(location):
+        raise Exception("ERROR: could not find your device "
+                        "folder location, bailing out")
+    dependencies = parse_dependency_file(location)
+    create_dependency_manifest(dependencies)
+
+
+def check_device_exists(device):
+    location = parse_device_from_folder(device)
+    if location is None:
+        return False
+    return os.path.isdir(location)
+
+
+def fetch_device(device):
+    if check_device_exists(device):
+        print("WARNING: Trying to fetch a device that's already there")
+        return
+    git_data = search_github_for_device(device)
+    device_url = get_device_url(git_data)
+    device_dir = parse_device_directory(device_url,device)
+    project = create_manifest_project(device_url,
+                                      device_dir,
+                                      remote=default_team_rem)
+    if not project is None:
+        manifest = append_to_manifest(project)
+        write_to_manifest(manifest)
+        print("syncing the device config")
+        os.system('repo sync -f --no-clone-bundle %s' % device_dir)
+
+
+if __name__ == '__main__':
+    if not os.path.isdir(local_manifest_dir):
+        os.mkdir(local_manifest_dir)
+
+    product = sys.argv[1]
+    try:
+        device = product[product.index("_") + 1:]
+    except ValueError:
+        device = product
+
+    if len(sys.argv) > 2:
+        deps_only = sys.argv[2]
     else:
-        print "Trying dependencies-only mode on a non-existing device tree?"
+        deps_only = False
 
-    sys.exit()
-
-else:
-    for repository in repositories:
-        repo_name = repository['name']
-        if repo_name.startswith("device_") and repo_name.endswith("_" + device):
-            print "Found repository: %s" % repository['name']
-            manufacturer = repo_name.replace("device_", "").replace("_" + device, "")
-
-            repo_path = "device/%s/%s" % (manufacturer, device)
-
-            add_to_manifest([{'repository':repo_name,'target_path':repo_path,'branch':'kk4.4'}])
-
-            print "Syncing repository to retrieve project."
-            os.system('repo sync %s' % repo_path)
-            print "Repository synced!"
-
-            fetch_dependencies(repo_path)
-            print "Done"
-            sys.exit()
-
-print "Repository for %s not found in the SlimRoms Github repository list. If this is in error, you may need to manually add it to .repo/local_manifests/slim_manifest.xml" % device
+    if not deps_only:
+        fetch_device(device)
+    fetch_dependencies(device)

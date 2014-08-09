@@ -68,41 +68,41 @@ endif
 
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
-ifeq ($(TARGET_USE_O3),true)
+ifeq ($(TARGET_USE_O_LEVEL_S),true)
+TARGET_arm_CFLAGS :=    -Os \
+                        -fomit-frame-pointer \
+                        -fstrict-aliasing    \
+                        -funswitch-loops
+
+# Modules can choose to compile some source as thumb.
+TARGET_thumb_CFLAGS :=  -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing
+
+else ifeq ($(TARGET_USE_O_LEVEL_3),true)
 TARGET_arm_CFLAGS :=    -O3 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
-else
-TARGET_arm_CFLAGS :=    -Os \
-                        -fomit-frame-pointer \
-                        -fstrict-aliasing    \
-                        -fno-zero-initialized-in-bss \
-                        -funswitch-loops \
-                        -fno-tree-vectorize \
-                        -Wno-unused-parameter \
-                        -Wno-unused-value \
-                        -Wno-unused-function
-endif
 
 # Modules can choose to compile some source as thumb.
-ifeq ($(TARGET_USE_O3),true)
-    TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O3 \
-                            -fomit-frame-pointer \
-                            -fno-strict-aliasing \
-                            -Wstrict-aliasing=2 \
-                            -Werror=strict-aliasing \
-                            -fno-tree-vectorize \
-                            -funsafe-math-optimizations \
-                            -Wno-unused-parameter \
-                            -Wno-unused-value \
-                            -Wno-unused-function
+TARGET_thumb_CFLAGS :=  -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing
+
 else
-    TARGET_thumb_CFLAGS :=  -mthumb \
-                            -Os \
-                            -fomit-frame-pointer \
-                            -fno-strict-aliasing
+TARGET_arm_CFLAGS :=    -O2 \
+                        -fomit-frame-pointer \
+                        -fstrict-aliasing    \
+                        -funswitch-loops
+
+# Modules can choose to compile some source as thumb.
+TARGET_thumb_CFLAGS :=  -mthumb \
+                        -Os \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing
 endif
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
@@ -119,15 +119,15 @@ ifeq ($(FORCE_ARM_DEBUGGING),true)
   TARGET_thumb_CFLAGS += -marm -fno-omit-frame-pointer
 endif
 
-android_config_h := $(call select-android-config-h,linux-arm)
-
 ifeq ($(TARGET_DISABLE_ARM_PIE),true)
    PIE_GLOBAL_CFLAGS :=
-   PIE_EXECUTABLE_TRANSFORM := -Wl,-T,$(BUILD_SYSTEM)/armelf.x
+   PIE_EXECUTABLE_TRANSFORM :=
 else
    PIE_GLOBAL_CFLAGS := -fPIE
    PIE_EXECUTABLE_TRANSFORM := -fPIE -pie
 endif
+
+android_config_h := $(call select-android-config-h,linux-arm)
 
 TARGET_GLOBAL_CFLAGS += \
 			-msoft-float -fpic $(PIE_GLOBAL_CFLAGS) \
@@ -174,6 +174,14 @@ TARGET_GLOBAL_LDFLAGS += \
 TARGET_GLOBAL_CFLAGS += -mthumb-interwork
 
 TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
+
+# option to enable pipe
+ifeq ($(TARGET_USE_PIPE),true)
+    TARGET_arm_CFLAGS += -pipe
+    TARGET_thumb_CFLAGS += -pipe
+    TARGET_GLOBAL_CFLAGS += -pipe
+    TARGET_RELEASE_CFLAGS += -pipe
+endif
 
 # More flags/options can be added here
 TARGET_RELEASE_CFLAGS := \
@@ -263,6 +271,16 @@ TARGET_STRIP_MODULE:=true
 TARGET_DEFAULT_SYSTEM_SHARED_LIBRARIES := libc libstdc++ libm
 
 TARGET_CUSTOM_LD_COMMAND := true
+
+# Define LTO (Link Time Optimization options
+
+ifneq ($(strip $(DISABLE_BUILD_LTO)),)
+# Disable global LTO if DISABLE_BUILD_LTO is set.
+TARGET_LTO_CFLAGS := -flto \
+					 -fno-toplevel-reorder \
+					 -flto-compression-level=5 \
+					 -fuse-linker-plugin
+endif
 
 define transform-o-to-shared-lib-inner
 $(hide) $(PRIVATE_CXX) \

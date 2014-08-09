@@ -508,19 +508,20 @@ else if get_stage("%(bcb_dev)s", "stage") == "3/3" then
     script.Unmount("/system")
 
   script.ShowProgress(0.5, 0)
-  script.Print("                    _____________________ ")
-  script.Print("                   /     www.slimroms.net|")
-  script.Print("                  /                      |")
-  script.Print("                 /    ___________________|")
-  script.Print("                /    /    ___             ")
-  script.Print("               /    / ___/   \            ")
-  script.Print("              /    / /   \___/____   ____ ")
-  script.Print("             /    /  |   |___/    \_/    |")
-  script.Print(" ___________/    /   |   |   |           |")
-  script.Print("|               /    |   |   |   |   |   |")
-  script.Print("|              /     |   |   |   |   |   |")
-  script.Print("|_____________/      \___^___^___^___^___/")
-  script.Print(" ")
+  script.Print("")
+  script.Print("####################################")
+  script.Print("#    /OOOOOO   /SSSSSS  /EEEEEEEE  #")
+  script.Print("#   /OO__  OO /SS__  SS| EE_____/  #")
+  script.Print("#  | OO  \ OO| SS  \__/| EE        #")
+  script.Print("#  | OO  | OO|  SSSSSS | EEEEE     #")
+  script.Print("#  | OO  | OO \____  SS| EE__/     #")
+  script.Print("#  | OO  | OO /SS  \ SS| EE        #")
+  script.Print("#  |  OOOOOO/|  SSSSSS/| EEEEEEEE  #")
+  script.Print("#   \______/  \______/ |________/  #")
+  script.Print("####################################")
+  script.Print("#    ~ Open Source Evolution ~     #")
+  script.Print("####################################")
+  script.Print("")
 
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
@@ -714,7 +715,7 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
     if d is None or len(d) > tf.size * OPTIONS.patch_threshold or \
         path not in known_paths:
       # patch is almost as big as the file; don't bother patching
-      # or a patch + rename cannot take place due to the target 
+      # or a patch + rename cannot take place due to the target
       # directory not existing
       tf.AddToZip(output_zip)
       verbatim_targets.append((tf.name, tf.size))
