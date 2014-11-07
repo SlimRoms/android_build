@@ -267,6 +267,9 @@ endif
 		echo "$(line)" >> $@;)
 	$(hide) cat $(INSTALLED_ANDROID_INFO_TXT_TARGET) | grep 'require version-' | sed -e 's/require version-/ro.build.expect./g' >> $@
 	$(hide) build/tools/post_process_props.py $@ "$(PRODUCT_PROPERTY_UBER_OVERRIDES)" $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_SYSTEM_PROPERTY_BLACKLIST)
+ifdef EXTENDED_POST_PROCESS_PROPS
+	$(hide) $(EXTENDED_POST_PROCESS_PROPS) $@
+endif
 
 build_desc :=
 
