@@ -621,13 +621,14 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   else:
     script.Print("")
     script.Print("Format and Mount System, Mount Data...")
+    script.script.append('unmount("/system");')
+    script.script.append('unmount("/data");')
     script.FormatPartition("/system")
     script.Mount("/system", recovery_mount_options)
     script.Mount("/data")
     if not has_recovery_patch:
       script.UnpackPackageDir("recovery", "/system")
     script.UnpackPackageDir("system", "/system")
-    script.UnpackPackageDir("data", "/data")
 
     script.Print("Symlinks and permissions...")
     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
