@@ -147,7 +147,6 @@ class EdifyGenerator(object):
     self.script.append(self._WordWrap(cmd))
 
   def RunBackup(self, command):
-    return  # Stop this running until update to use metadata
     self.script.append('package_extract_dir("system/addon.d", "/system/addon.d");')
     self.script.append('package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");')
     self.script.append('package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");')
