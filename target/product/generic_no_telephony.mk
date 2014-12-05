@@ -22,7 +22,7 @@ PRODUCT_PACKAGES := \
     Camera2 \
     Gallery2 \
     Email \
-    Exchange \
+    Exchange2 \
     Music \
     MusicFX \
     OneTimeInitializer \
