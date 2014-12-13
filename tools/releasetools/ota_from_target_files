@@ -588,6 +588,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   system_progress = 0.75
 
+  script.Print(" SlimLP Mod by ezio84 @ xda")
+  script.Print(" ")
   script.Print("                    _____________________ ")
   script.Print("                   /     www.slimroms.eu |")
   script.Print("                  /                      |")
@@ -601,6 +603,13 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print("|              /     |   |   |   |   |   |")
   script.Print("|_____________/      \___^___^___^___^___/")
   script.Print(" ")
+
+  build = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+  script.Print("Compiled: %s"%(build));
+
+  device = GetBuildProp("ro.product.device", OPTIONS.info_dict)
+  model = GetBuildProp("ro.product.model", OPTIONS.info_dict)
+  script.Print("Device: %s (%s)"%(model, device));
 
   if OPTIONS.wipe_user_data:
     system_progress -= 0.1
