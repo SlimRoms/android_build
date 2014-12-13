@@ -21,13 +21,14 @@ PRODUCT_PACKAGES := \
     Bluetooth \
     Camera2 \
     Gallery2 \
-    MusicFX \
     OneTimeInitializer \
     Provision \
     SystemUI \
     WallpaperCropper
+
 #    Email \
 #    Exchange2 \
+#    MusicFX \
 
 PRODUCT_PACKAGES += \
     clatd \
