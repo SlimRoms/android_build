@@ -25,7 +25,9 @@ PRODUCT_PACKAGES := \
 
 # Additional settings used in all AOSP builds
 PRODUCT_PROPERTY_OVERRIDES := \
-    ro.com.android.dateformat=MM-dd-yyyy
+    ro.com.android.dateformat=MM-dd-yyyy \
+    ro.config.ringtone=Triton.ogg \
+    ro.config.notification_sound=Io.ogg
 
 # Put en_US first in the list, so make it default.
 PRODUCT_LOCALES := en_US
@@ -34,7 +36,7 @@ PRODUCT_LOCALES := en_US
 PRODUCT_AAPT_CONFIG := normal
 
 # Get some sounds
-$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
+$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudioSlim.mk)
 
 # Get the TTS language packs
 $(call inherit-product-if-exists, external/svox/pico/lang/all_pico_languages.mk)
