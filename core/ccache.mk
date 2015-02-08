@@ -28,6 +28,14 @@
 #
 # So if you still want to use ccache, continue setting USE_CCACHE, but also set
 # the CCACHE_EXEC environment variable to the path to your ccache executable.
+
+ifeq ($(CCACHE_EXEC),)
+ccache := $(shell which ccache)
+ifneq ($(ccache),)
+CCACHE_EXEC := $(ccache)
+endif
+endif
+
 ifneq ($(CCACHE_EXEC),)
 ifneq ($(filter-out false,$(USE_CCACHE)),)
   # The default check uses size and modification time, causing false misses
