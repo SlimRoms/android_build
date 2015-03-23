@@ -1717,6 +1717,8 @@ endif
 
 bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(SLIM_TARGET_PACKAGE)
+	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) > $(SLIM_TARGET_PACKAGE).md5sum
+	@echo -e "Package Complete: $(SLIM_TARGET_PACKAGE)"
 ifdef FINISHER_SCRIPT
 	@echo -e ${CL_YLW}"Running finisher..."${CL_RST}
 	$(hide) $(FINISHER_SCRIPT) $@
