@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da141535_8888bf23",
+        "filename": "tools/releasetools/ota_from_target_files",
+        "patchSetId": 2
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 1000016
+      },
+      "writtenOn": "2015-04-12T21:47:10Z",
+      "side": 1,
+      "message": "www.slimroms.eu",
+      "range": {
+        "startLine": 592,
+        "startChar": 41,
+        "endLine": 592,
+        "endChar": 57
+      },
+      "revId": "9daa9a4aed25ddf27b49e71fe2003015f5dd916d",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    }
+  ]
+}
