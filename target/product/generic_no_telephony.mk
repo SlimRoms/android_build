@@ -20,14 +20,13 @@
 PRODUCT_PACKAGES := \
     Bluetooth \
     Camera2 \
+    Email \
+    Exchange2 \
     Gallery2 \
     OneTimeInitializer \
     Provision \
     SystemUI \
     WallpaperCropper
-
-#    Email \
-#    Exchange2 \
 #    MusicFX \
 
 PRODUCT_PACKAGES += \
