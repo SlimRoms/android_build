@@ -1913,7 +1913,6 @@ function slimremote()
     echo "Remote 'slim' created"
     fi
 }
-export -f slimremote
 
 function cmremote()
 {
