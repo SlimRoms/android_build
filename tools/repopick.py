@@ -352,7 +352,7 @@ for changeps in args.change_number:
             split_path[2] = split_path[2].split('-')[0]
 
             # Need to treat hardware/qcom/{audio,display,media} specially
-            if split_path[2] == 'audio' or split_path[2] == 'display' or split_path[2] == 'media':
+            if split_path[2] in ('audio', 'display', 'media'):
                 split_branch = project_branch.split('-')
 
                 # display is extra special
@@ -361,8 +361,8 @@ for changeps in args.change_number:
                 else:
                     project_path = '/'.join(split_path[:-1])
 
-                if len(split_branch) == 4 and split_branch[0] == 'cm' and split_branch[2] == 'caf':
-                    project_path += '-caf/msm' + split_branch[3]
+                if len(split_branch) != 1 and split_branch[0].startswith('lp') and split_branch[1] == 'caf':
+                    project_path += '-caf/msm' + split_branch[2]
                 # audio and media are different from display
                 elif split_path[2] == 'audio' or split_path[2] == 'media':
                     project_path += '/default'
