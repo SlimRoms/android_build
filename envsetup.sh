@@ -34,12 +34,9 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 Look at the source to view more functions. The complete list is:
 EOF
     T=$(gettop)
-    local A
-    A=""
     for i in `cat $T/build/envsetup.sh | sed -n "/^[ \t]*function /s/function \([a-z_]*\).*/\1/p" | sort | uniq`; do
-      A="$A $i"
-    done
-    echo $A
+      echo "$i"
+    done | column
 }
 
 # Get the value of a build variable as an absolute path.
@@ -77,7 +74,7 @@ function check_product()
 
     if (echo -n $1 | grep -q -e "^slim_") ; then
        SLIM_BUILD=$(echo -n $1 | sed -e 's/^slim_//g')
-       export BUILD_NUMBER=$((date +%s%N ; echo $SLIM_BUILD; hostname) | openssl sha1 | sed -e 's/.*=//g; s/ //g' | cut -c1-10)
+       export BUILD_NUMBER=$( (date +%s%N ; echo $SLIM_BUILD; hostname) | openssl sha1 | sed -e 's/.*=//g; s/ //g' | cut -c1-10)
     else
        SLIM_BUILD=
     fi
@@ -572,6 +569,7 @@ function lunch()
     if [ "$1" ] ; then
         answer=$1
     else
+        LUNCH_MENU_CHOICES=($(for l in ${LUNCH_MENU_CHOICES[@]}; do echo "$l"; done | sort))
         print_lunch_menu
         echo -n "Which would you like? [aosp_arm-eng] "
         read answer
@@ -1920,7 +1918,6 @@ function slimremote()
     echo "Remote 'slim' created"
     fi
 }
-export -f slimremote
 
 function cmremote()
 {
@@ -2058,7 +2055,7 @@ function mka() {
             make -j `sysctl hw.ncpu|cut -d" " -f2` "$@"
             ;;
         *)
-            schedtool -B -n 1 -e ionice -n 1 make -j$(cat /proc/cpuinfo | grep "^processor" | wc -l) "$@"
+            mk_timer schedtool -B -n 1 -e ionice -n 1 make -j$(cat /proc/cpuinfo | grep "^processor" | wc -l) "$@"
             ;;
     esac
 }
@@ -2335,10 +2332,10 @@ function get_make_command()
   echo command make
 }
 
-function make()
+function mk_timer()
 {
     local start_time=$(date +"%s")
-    $(get_make_command) "$@"
+    $@
     local ret=$?
     local end_time=$(date +"%s")
     local tdiff=$(($end_time-$start_time))
@@ -2363,6 +2360,11 @@ function make()
     return $ret
 }
 
+function make()
+{
+    mk_timer $(get_make_command) "$@"
+}
+
 function fixup_common_out_dir() {
     common_out_dir=$(get_build_var OUT_DIR)/target/common
     target_device=$(get_build_var TARGET_DEVICE)
@@ -2380,7 +2382,6 @@ function fixup_common_out_dir() {
         mkdir -p ${common_out_dir}
     fi
 }
-
 
 if [ "x$SHELL" != "x/bin/bash" ]; then
     case `ps -o command -p $$` in
