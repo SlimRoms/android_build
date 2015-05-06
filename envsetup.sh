@@ -1,39 +1,46 @@
-function hmm() {
-cat <<EOF
-Invoke ". build/envsetup.sh" from your shell to add the following functions to your environment:
-- lunch:   lunch <product_name>-<build_variant>
-- tapas:   tapas [<App1> <App2> ...] [arm|x86|mips|armv5|arm64|x86_64|mips64] [eng|userdebug|user]
-- croot:   Changes directory to the top of the tree.
-- cout:    Changes directory to out.
-- m:       Makes from the top of the tree.
-- mm:      Builds all of the modules in the current directory, but not their dependencies.
-- mmm:     Builds all of the modules in the supplied directories, but not their dependencies.
-           To limit the modules being built use the syntax: mmm dir/:target1,target2.
-- mma:     Builds all of the modules in the current directory, and their dependencies.
-- mmp:     Builds all of the modules in the current directory and pushes them to the device.
-- mmmp:    Builds all of the modules in the supplied directories and pushes them to the device.
-- mmma:    Builds all of the modules in the supplied directories, and their dependencies.
-- cgrep:   Greps on all local C/C++ files.
-- ggrep:   Greps on all local Gradle files.
-- jgrep:   Greps on all local Java files.
-- resgrep: Greps on all local res/*.xml files.
-- sgrep:   Greps on all local source files.
-- godir:   Go to the directory containing a file.
-- slimremote: Add a git remote for matching SLIM repository
-- cmremote: Add a git remote for matching CM repository
-- aospremote: Add git remote for matching AOSP repository
-- cafremote: Add git remote for matching CodeAurora repository.
-- mka:      Builds using SCHED_BATCH on all processors
-- mkap:     Builds the module(s) using mka and pushes them to the device.
-- cmka:     Cleans and builds using mka.
-- reposync: Parallel repo sync using ionice and SCHED_BATCH
-- repopick: Utility to fetch changes from Gerrit.
-- installboot: Installs a boot.img to the connected device.
-- installrecovery: Installs a recovery.img to the connected device.
 
-Look at the source to view more functions. The complete list is:
-EOF
+export HMM_DESCRIPTIVE=(
+"lunch:   lunch <product_name>-<build_variant>"
+"tapas:   tapas [<App1> <App2> ...] [arm|x86|mips|armv5|arm64|x86_64|mips64] [eng|userdebug|user]"
+"croot:   Changes directory to the top of the tree."
+"cout:    Changes directory to out."
+"m:       Makes from the top of the tree."
+"mm:      Builds all of the modules in the current directory, but not their dependencies."
+"mmm:     Builds all of the modules in the supplied directories, but not their dependencies.
+               To limit the modules being built use the syntax: mmm dir/:target1,target2."
+"mma:     Builds all of the modules in the current directory, and their dependencies."
+"mmp:     Builds all of the modules in the current directory and pushes them to the device."
+"mmmp:    Builds all of the modules in the supplied directories and pushes them to the device."
+"mmma:    Builds all of the modules in the supplied directories, and their dependencies."
+"cgrep:   Greps on all local C/C++ files."
+"ggrep:   Greps on all local Gradle files."
+"jgrep:   Greps on all local Java files."
+"resgrep: Greps on all local res/*.xml files."
+"sgrep:   Greps on all local source files."
+"godir:   Go to the directory containing a file."
+"slimremote: Add a git remote for matching SLIM repository"
+"cmremote: Add a git remote for matching CM repository"
+"aospremote: Add git remote for matching AOSP repository"
+"cafremote: Add git remote for matching CodeAurora repository."
+"mka:      Builds using SCHED_BATCH on all processors"
+"mkap:     Builds the module(s) using mka and pushes them to the device."
+"cmka:     Cleans and builds using mka."
+"reposync: Parallel repo sync using ionice and SCHED_BATCH"
+"repopick: Utility to fetch changes from Gerrit."
+"installboot: Installs a boot.img to the connected device."
+"installrecovery: Installs a recovery.img to the connected device."
+)
+
+function hmm() {
     T=$(gettop)
+
+    echo "Invoke \". build/envsetup.sh\" from your shell to add the following functions to your environment:"
+    for c in ${!HMM_DESCRIPTIVE[*]}; do
+        echo -e "- ${HMM_DESCRIPTIVE[$c]}"
+    done
+
+    echo
+    echo "Look at the source to view more functions. The complete list is:"
     for i in `cat $T/build/envsetup.sh | sed -n "/^[ \t]*function /s/function \([a-z_]*\).*/\1/p" | sort | uniq`; do
       echo "$i"
     done | column
@@ -1896,72 +1903,6 @@ function godir () {
         pathname=${lines[0]}
     fi
     \cd $T/$pathname
-}
-
-function slimremote()
-{
-    git remote rm slim 2> /dev/null
-    PFX=""
-    if [ ! -d .git ]
-    then
-        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
-    else
-    PROJ=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
-
-    if (echo $PROJ | egrep -q 'external|system|build|bionic|art|libcore|prebuilt|dalvik') ; then
-        PFX="android_"
-    fi
-
-    PROJECT="$(echo $PROJ | sed 's/\//_/g')"
-
-    git remote add slim git@github.com:SlimRoms/$PFX$PROJECT
-    echo "Remote 'slim' created"
-    fi
-}
-
-function cmremote()
-{
-    git remote rm cm 2> /dev/null
-    if [ ! -d .git ]
-    then
-        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
-    fi
-    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
-    PFX="android_$(echo $PROJECT | sed 's/\//_/g')"
-    git remote add cm git@github.com:CyanogenMod/$PFX
-    echo "Remote 'cm' created"
-}
-
-function aospremote()
-{
-    git remote rm aosp 2> /dev/null
-    if [ ! -d .git ]
-    then
-        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
-    fi
-    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
-    if (echo $PROJECT | grep -qv "^device")
-    then
-        PFX="platform/"
-    fi
-    git remote add aosp https://android.googlesource.com/$PFX$PROJECT
-    echo "Remote 'aosp' created"
-}
-
-function cafremote()
-{
-    git remote rm caf 2> /dev/null
-    if [ ! -d .git ]
-    then
-        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
-    fi
-    PROJECT=`pwd -P | sed s#$ANDROID_BUILD_TOP/##g`
-    if (echo $PROJECT | grep -qv "^device")
-    then
-        PFX="platform/"
-    fi
-    git remote add caf git://codeaurora.org/$PFX$PROJECT
-    echo "Remote 'caf' created"
 }
 
 function installboot()
