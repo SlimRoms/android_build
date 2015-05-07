@@ -17,6 +17,7 @@
 from __future__ import print_function
 
 import base64
+import glob
 import json
 import netrc
 import os
@@ -151,6 +152,13 @@ def get_from_manifest(device_name):
             if lp.startswith("device/") and lp.endswith("/" + device_name):
                 return lp
     return None
+
+
+def guess_device_path(device_name):
+    try:
+        return glob.glob('device/*/{0}'.format(device_name))[0]
+    except IndexError:
+        return None
 
 
 def is_in_manifest(project_path):
@@ -318,7 +326,7 @@ def main():
     device = product[product.find("_") + 1:] or product
 
     if depsonly:
-        repo_path = get_from_manifest(device)
+        repo_path = get_from_manifest(device) or guess_device_path(device)
         if repo_path:
             fetch_dependencies(repo_path)
         else:
