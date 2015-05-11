@@ -22,6 +22,7 @@
 
 PRODUCT_PACKAGES += \
     BasicDreams \
+    Browser \
     Calculator \
     Calendar \
     CalendarProvider \
@@ -52,6 +53,5 @@ PRODUCT_PACKAGES += \
     TeleService \
     VpnDialogs \
     MmsService
-#    Browser \
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
