@@ -851,6 +851,46 @@ class PasswordManager(object):
     return result
 
 
+def ZipWrite(zip_file, filename, arcname=None, perms=0o644,
+             compress_type=None):
+  import datetime
+
+  # http://b/18015246
+  # Python 2.7's zipfile implementation wrongly thinks that zip64 is required
+  # for files larger than 2GiB. We can work around this by adjusting their
+  # limit. Note that `zipfile.writestr()` will not work for strings larger than
+  # 2GiB. The Python interpreter sometimes rejects strings that large (though
+  # it isn't clear to me exactly what circumstances cause this).
+  # `zipfile.write()` must be used directly to work around this.
+  #
+  # This mess can be avoided if we port to python3.
+  saved_zip64_limit = zipfile.ZIP64_LIMIT
+  zipfile.ZIP64_LIMIT = (1 << 32) - 1
+
+  if compress_type is None:
+    compress_type = zip_file.compression
+  if arcname is None:
+    arcname = filename
+
+  saved_stat = os.stat(filename)
+
+  try:
+    # `zipfile.write()` doesn't allow us to pass ZipInfo, so just modify the
+    # file to be zipped and reset it when we're done.
+    os.chmod(filename, perms)
+
+    # Use a fixed timestamp so the output is repeatable.
+    epoch = datetime.datetime.fromtimestamp(0)
+    timestamp = (datetime.datetime(2009, 1, 1) - epoch).total_seconds()
+    os.utime(filename, (timestamp, timestamp))
+
+    zip_file.write(filename, arcname=arcname, compress_type=compress_type)
+  finally:
+    os.chmod(filename, saved_stat.st_mode)
+    os.utime(filename, (saved_stat.st_atime, saved_stat.st_mtime))
+    zipfile.ZIP64_LIMIT = saved_zip64_limit
+
+
 def ZipWriteStr(zip, filename, data, perms=0644, compression=None):
   # use a fixed timestamp so the output is repeatable.
   zinfo = zipfile.ZipInfo(filename=filename,
