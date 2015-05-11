@@ -1673,7 +1673,7 @@ ifneq ($(TARGET_UNIFIED_DEVICE),)
     endif
 endif
 
-ifneq ($(OLD_OTA),false)
+ifneq ($(OLD_OTA),true)
     $(INTERNAL_OTA_PACKAGE_TARGET): block_ota := --block
 endif
 
