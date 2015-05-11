@@ -84,6 +84,9 @@ dont_bother_goals := clean clobber dataclean installclean \
 ifneq ($(filter $(dont_bother_goals), $(MAKECMDGOALS)),)
 dont_bother := true
 endif
+ifeq ($(MAKECMDGOALS),cleaner)
+dont_bother := true
+endif
 
 # Targets that provide quick help on the build system.
 include $(BUILD_SYSTEM)/help.mk
@@ -1056,14 +1059,19 @@ endif  # samplecode in $(MAKECMDGOALS)
 .PHONY: findbugs
 findbugs: $(INTERNAL_FINDBUGS_HTML_TARGET) $(INTERNAL_FINDBUGS_XML_TARGET)
 
-.PHONY: clean
-clean:
+.PHONY: cleaner
+cleaner:
 	@rm -rf $(OUT_DIR)/*
 	@echo -e ${CL_GRN}"Entire build directory removed."${CL_RST}
 
 .PHONY: clobber
 clobber: clean
 
+.PHONY: clean
+clean:
+	@rm -rf $(OUT_DIR)/target/product/*/
+	@echo -e ${CL_GRN}"Working device build directory removed."${CL_RST}
+ 
 # The rules for dataclean and installclean are defined in cleanbuild.mk.
 
 #xxx scrape this from ALL_MODULE_NAME_TAGS
