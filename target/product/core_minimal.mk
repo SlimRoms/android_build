@@ -25,7 +25,6 @@ PRODUCT_NAME := core
 PRODUCT_PACKAGES += \
     BackupRestoreConfirmation \
     DownloadProvider \
-    HTMLViewer \
     MediaProvider \
     PackageInstaller \
     SettingsProvider \
@@ -74,6 +73,7 @@ PRODUCT_PACKAGES += \
     voip-common \
     webview \
     wifi-service
+#        HTMLViewer \
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.webview.xml:system/etc/permissions/android.software.webview.xml

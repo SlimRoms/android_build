@@ -19,7 +19,6 @@
 
 PRODUCT_PACKAGES := \
     Bluetooth \
-    Camera2 \
     Email \
     Exchange2 \
     Gallery2 \
@@ -28,6 +27,7 @@ PRODUCT_PACKAGES := \
     SystemUI \
     WallpaperCropper
 #    MusicFX \
+#    Camera2 \
 
 PRODUCT_PACKAGES += \
     clatd \
