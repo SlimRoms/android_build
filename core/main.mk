@@ -84,6 +84,9 @@ dont_bother_goals := clean clobber dataclean installclean \
 ifneq ($(filter $(dont_bother_goals), $(MAKECMDGOALS)),)
 dont_bother := true
 endif
+ifeq ($(MAKECMDGOALS),cleaner)
+dont_bother := true
+endif
 
 # Targets that provide quick help on the build system.
 include $(BUILD_SYSTEM)/help.mk
@@ -324,10 +327,11 @@ endif
 
 user_variant := $(filter user userdebug,$(TARGET_BUILD_VARIANT))
 enable_target_debugging := true
+WITH_DEXPREOPT := false
 tags_to_install :=
 ifneq (,$(user_variant))
   # Target is secure in user builds.
-  ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=1
+  ADDITIONAL_DEFAULT_PROPERTIES += ro.secure=0
 
   ifeq ($(user_variant),userdebug)
     # Pick up some extra useful tools
@@ -337,7 +341,7 @@ ifneq (,$(user_variant))
     ADDITIONAL_BUILD_PROPERTIES += dalvik.vm.lockprof.threshold=500
   else
     # Disable debugging in plain user builds.
-    enable_target_debugging :=
+    enable_target_debugging := true
   endif
 
   # Turn on Dalvik preoptimization for libdvm.so user builds, but only if not
@@ -347,7 +351,7 @@ ifneq (,$(user_variant))
     ifeq ($(DALVIK_VM_LIB),libdvm.so)
       ifeq ($(user_variant),user)
         ifeq ($(HOST_OS),linux)
-          WITH_DEXPREOPT := true
+          WITH_DEXPREOPT := false
         endif
       endif
     endif
@@ -379,6 +383,7 @@ endif # !enable_target_debugging
 
 ifeq ($(TARGET_BUILD_VARIANT),eng)
 tags_to_install := debug eng
+WITH_DEXPREOPT := false
 ifneq ($(filter ro.setupwizard.mode=ENABLED, $(call collapse-pairs, $(ADDITIONAL_BUILD_PROPERTIES))),)
   # Don't require the setup wizard on eng builds
   ADDITIONAL_BUILD_PROPERTIES := $(filter-out ro.setupwizard.mode=%,\
@@ -1054,14 +1059,19 @@ endif  # samplecode in $(MAKECMDGOALS)
 .PHONY: findbugs
 findbugs: $(INTERNAL_FINDBUGS_HTML_TARGET) $(INTERNAL_FINDBUGS_XML_TARGET)
 
-.PHONY: clean
-clean:
+.PHONY: cleaner
+cleaner:
 	@rm -rf $(OUT_DIR)/*
 	@echo -e ${CL_GRN}"Entire build directory removed."${CL_RST}
 
 .PHONY: clobber
 clobber: clean
 
+.PHONY: clean
+clean:
+	@rm -rf $(OUT_DIR)/target/product/*/
+	@echo -e ${CL_GRN}"Working device build directory removed."${CL_RST}
+ 
 # The rules for dataclean and installclean are defined in cleanbuild.mk.
 
 #xxx scrape this from ALL_MODULE_NAME_TAGS
