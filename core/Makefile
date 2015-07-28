@@ -1705,7 +1705,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	@echo -e ${CL_YLW}"Package OTA:"${CL_RST}" $@"
 	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
 	   $(OTA_FROM_TARGET_SCRIPT) -v \
-	   --block \
 	   $(if $(WITH_LZMA_OTA), -z) \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
