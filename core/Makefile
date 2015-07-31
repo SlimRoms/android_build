@@ -1521,6 +1521,11 @@ DISTTOOLS += \
   $(HOST_LIBRARY_PATH)/libext2_quota_host$(HOST_SHLIB_SUFFIX) \
   $(HOST_LIBRARY_PATH)/libext2_uuid_host$(HOST_SHLIB_SUFFIX)
 
+ifeq ($(HOST_OS),linux)
+  DISTTOOLS += $(HOST_OUT_EXECUTABLES)/mkf2fsuserimg.sh \
+	$(HOST_OUT_EXECUTABLES)/make_f2fs
+endif
+
 OTATOOLS := $(DISTTOOLS) \
   $(HOST_OUT_EXECUTABLES)/aapt
 
