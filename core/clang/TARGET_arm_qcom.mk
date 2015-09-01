@@ -84,10 +84,10 @@ CLANG_QCOM_CONFIG_KRAIT_MEM_FLAGS := \
   #-mllvm -arm-expand-memcpy-runtime=8
   #-mllvm -aggressive-jt
 
-CLANG_QCOM_CONFIG_KRAIT_PARALLEL_FLAGS :=\
-  -L $(libpath)/linux-propri_rt/ \
-  -l clang_rt.translib32 \
-  -fparallel  
+#CLANG_QCOM_CONFIG_KRAIT_PARALLEL_FLAGS :=\
+  #-L $(libpath)/linux-propri_rt/ \
+  #-l clang_rt.translib32 \
+  #-fparallel  
 
 ifeq ($(USE_CLANG_QCOM_LTO),true)
   CLANG_QCOM_CONFIG_LTO_FLAGS := -flto 
@@ -385,6 +385,7 @@ CLANG_QCOM_FORCE_COMPILE_ACLANG_MODULES +=
 # -fparallel where to use? see 3.6.4
 # Only use on selected modules. NOT USED AT THE MOMENT!
 CLANG_QCOM_USE_PARALLEL_MODULES += \
+  libpng \
   libsigchain \
   libcompiler_rt-extras \
   libcompiler_rt \
