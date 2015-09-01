@@ -696,14 +696,14 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.FlashSuperSU()
 
   script.AppendExtra("""run_program("/sbin/busybox", "mount", "/data");
-run_program("/sbin/busybox", "mount", "/system");
-delete_recursive("/data/UKM");
-run_program("/sbin/sh", "-c", "mv /system/UKM /data/");
-run_program("/sbin/sh", "-c", "chmod -R 775 /data/UKM");
-run_program("/sbin/sh", "-c", "rm -R -f /system/UKM");
-run_program("/sbin/sh", "-c", "mv /system/app/explorer /data/app/explorer");
-run_program("/sbin/sh", "-c", "chmod -R 775 /data/app/explorer");
-run_program("/sbin/sh", "-c", "rm -R -f /system/app/explorer");""")
+  run_program("/sbin/busybox", "mount", "/system");
+  delete_recursive("/data/UKM");
+  run_program("/sbin/sh", "-c", "mv /system/UKM /data/");
+  run_program("/sbin/sh", "-c", "chmod -R 775 /data/UKM");
+  run_program("/sbin/sh", "-c", "rm -R -f /system/UKM");
+  run_program("/sbin/sh", "-c", "mv /system/app/explorer /data/app/explorer");
+  run_program("/sbin/sh", "-c", "chmod -R 775 /data/app/explorer");
+  run_program("/sbin/sh", "-c", "rm -R -f /system/app/explorer");""")
 
 
   script.ShowProgress(0.05, 5)
