@@ -385,7 +385,6 @@ CLANG_QCOM_FORCE_COMPILE_ACLANG_MODULES +=
 # -fparallel where to use? see 3.6.4
 # Only use on selected modules. NOT USED AT THE MOMENT!
 CLANG_QCOM_USE_PARALLEL_MODULES += \
-  libpng \
   libsigchain \
   libcompiler_rt-extras \
   libcompiler_rt \
