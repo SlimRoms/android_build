@@ -452,6 +452,7 @@ event-log-tags: $(event_log_tags_file)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(event_log_tags_file)
 
+include $(BUILD_SYSTEM)/nuclearopts.mk
 
 # #################################################################
 # Targets for boot/OS images
