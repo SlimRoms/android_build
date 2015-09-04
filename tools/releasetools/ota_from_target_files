@@ -701,7 +701,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   run_program("/sbin/sh", "-c", "mv /system/UKM /data/");
   run_program("/sbin/sh", "-c", "chmod -R 775 /data/UKM");
   run_program("/sbin/sh", "-c", "rm -R -f /system/UKM");
-  run_program("/sbin/sh", "-c", "mv /system/app/explorer /data/app/explorer");
+  run_program("/sbin/sh", "-c", "mv /system/app/explorer /data/app/");
   run_program("/sbin/sh", "-c", "chmod -R 775 /data/app/explorer");
   run_program("/sbin/sh", "-c", "rm -R -f /system/app/explorer");""")
 
