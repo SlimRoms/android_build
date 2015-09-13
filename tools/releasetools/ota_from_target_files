@@ -594,7 +594,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   system_progress = 0.75
 
   script.Print("                    _____________________ ")
-  script.Print("                   /     www.slimroms.eu |")
+  script.Print("                   /    www.slimroms.org |")
   script.Print("                  /                      |")
   script.Print("                 /    ___________________|")
   script.Print("                /    /    ___             ")

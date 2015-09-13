@@ -194,7 +194,7 @@ while(True):
 
 # Get all commits for a specified query
 def fetch_query(query):
-    url = 'http://review.slimroms.eu/changes/?q=%s' % query
+    url = 'http://review.slimroms.org/changes/?q=%s' % query
     if args.verbose:
         print('Fetching all commits using query: %s\n' % query)
     f = urllib.request.urlopen(url)
@@ -265,7 +265,7 @@ for changeps in args.change_number:
     # gerrit returns two lines, a magic string and then valid JSON:
     #   )]}'
     #   [ ... valid JSON ... ]
-    url = 'http://review.slimroms.eu/changes/?q={change}&o={query_revision}&o=CURRENT_COMMIT&pp=0'.format(change=change, query_revision=query_revision)
+    url = 'http://review.slimroms.org/changes/?q={change}&o={query_revision}&o=CURRENT_COMMIT&pp=0'.format(change=change, query_revision=query_revision)
     if args.verbose:
         print('Fetching from: %s\n' % url)
     try:
