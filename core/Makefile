@@ -975,8 +975,6 @@ $(recovery_ramdisk): $(MKBOOTFS) $(MINIGZIP) $(RECOVERYIMAGE_EXTRA_DEPS) \
 		$(RECOVERY_INSTALL_OTA_KEYS)
 		$(call build-recoveryimage-target, $@)
 
-endif # BOARD_CUSTOM_BOOTIMG_MK
-
 recovery_patch_path := $(call intermediates-dir-for,PACKAGING,recovery_patch)
 ota_temp_root := $(PRODUCT_OUT)/ota_temp
 $(RECOVERY_PATCH_INSTALL): PRIVATE_RECOVERY_API_VERSION := $(RECOVERY_API_VERSION)
