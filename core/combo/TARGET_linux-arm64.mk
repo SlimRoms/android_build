@@ -115,10 +115,17 @@ TARGET_GLOBAL_LDFLAGS += \
 
 TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 
+# Nuclear optimizations
+include $(BUILD_SYSTEM)/nuclearopts.mk
+
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += $(NUCLEAR_GCC_CFLAGS)
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_CPPFLAGS += $(NUCLEAR_GCC_CPPFLAGS)
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_LDFLAGS += $(NUCLEAR_GCC_LDFLAGS)
+
 # More flags/options can be added here
 TARGET_RELEASE_CFLAGS := \
 			-DNDEBUG \
-			-O2 -g \
+			$(NUCLEAR_GCC_CFLAGS_ARM) \
 			-Wstrict-aliasing=2 \
 			-fgcse-after-reload \
 			-frerun-cse-after-loop \

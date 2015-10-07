@@ -144,6 +144,8 @@ CLANG_QCOM_CONFIG_arm_UNKNOWN_CFLAGS := \
   -funsafe-loop-optimizations \
   -funswitch-loops \
   -fweb \
+  -fgraphite \
+  -fgraphite-identity \
   -fgcse-after-reload \
   -frename-registers \
   -finline-functions \
