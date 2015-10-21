@@ -583,7 +583,7 @@ bootimage-nodeps: $(MKBOOTIMG)
 	$(hide) $(call assert-max-image-size,$(INSTALLED_BOOTIMAGE_TARGET),$(BOARD_BOOTIMAGE_PARTITION_SIZE))
 	@echo -e ${CL_INS}"Made boot image: $@"${CL_RST}
 
-  endif # PRODUCT_SUPPORTS_VERITY
+  endif # PRODUCT_SUPPORTS_VBOOT
 endif # PRODUCT_SUPPORTS_BOOT_SIGNER / BOARD_CUSTOM_BOOTIMG_MK
 
 else	# TARGET_NO_KERNEL
