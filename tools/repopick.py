@@ -194,7 +194,7 @@ while(True):
 
 # Get all commits for a specified query
 def fetch_query(query):
-    url = 'http://review.slimroms.eu/changes/?q=%s' % query
+    url = 'https://review.slimroms.org/changes/?q=%s' % query
     if args.verbose:
         print('Fetching all commits using query: %s\n' % query)
     f = urllib.request.urlopen(url)
@@ -208,7 +208,6 @@ def fetch_query(query):
     if matchObj:
         sys.stderr.write('ERROR: Query %s was not found on the server\n' % query)
         sys.exit(1)
-    d = re.sub(r'\[(.*)\]', r'\1', d)
     if args.verbose:
         print('Result from request:\n' + d)
 
