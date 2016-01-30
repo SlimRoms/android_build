@@ -42,6 +42,7 @@ except ImportError:
     urllib.error = urllib2
     urllib.request = urllib2
 
+
 # Verifies whether pathA is a subdirectory (or the same) as pathB
 def is_subdir(a, b):
     a = os.path.realpath(a) + '/'
@@ -62,6 +63,7 @@ def fetch_query_via_ssh(remote_url, query):
         port = 29418
     else:
         raise Exception('Malformed URI: Expecting ssh://[user@]host[:port]')
+
 
     out = subprocess.check_output(['ssh', '-x', '-p{0}'.format(port), userhost, 'gerrit', 'query', '--format=JSON --patch-sets --current-patch-set', query])
 
@@ -114,7 +116,7 @@ def fetch_query(remote_url, query):
         return fetch_query_via_ssh(remote_url, query)
     elif remote_url[0:4] == 'http':
         return fetch_query_via_http(remote_url, query.replace(' ', '+'))
-   else:
+    else:
         raise Exception('Gerrit URL should be in the form http[s]://hostname/ or ssh://[user@]host[:port]')
 
 if __name__ == '__main__':
@@ -177,6 +179,7 @@ if __name__ == '__main__':
     if not os.path.isdir('.repo'):
         sys.stderr.write('ERROR: No .repo directory found. Please run this from the top of your tree.\n')
         sys.exit(1)
+
     # If --abandon-first is given, abandon the branch before starting
     if args.abandon_first:
         # Determine if the branch already exists; skip the abandon if it does not
@@ -229,8 +232,14 @@ if __name__ == '__main__':
         reviews = fetch_query(args.gerrit, args.query)
         change_numbers = sorted([str(r['number']) for r in reviews])
     if args.change_number:
-        reviews = fetch_query(args.gerrit, ' OR '.join('change:{0}'.format(x.split('/')[0]) for x in args.change_number))
-        change_numbers = args.change_number
+        for c in args.change_number:
+            if '-' in c:
+                templist = c.split('-')
+                for i in range(int(templist[0]), int(templist[1]) + 1):
+                    change_numbers.append(str(i))
+            else:
+                change_numbers.append(c)
+        reviews = fetch_query(args.gerrit, ' OR '.join('change:{0}'.format(x.split('/')[0]) for x in change_numbers))
 
     # make list of things to actually merge
     mergables = []
@@ -249,7 +258,11 @@ if __name__ == '__main__':
             continue
 
         change = int(change)
-        review = [x for x in reviews if x['number'] == change][0]
+        review = next((x for x in reviews if x['number'] == change), None)
+        if review is None:
+            print('Change %d not found, skipping' % change)
+            continue
+
         mergables.append({
             'subject': review['subject'],
             'project': review['project'],
@@ -304,7 +317,7 @@ if __name__ == '__main__':
 
         if 'anonymous http' in item['fetch']:
             method = 'anonymous http'
-         else:
+        else:
             method = 'ssh'
 
         # Try fetching from GitHub first if using default gerrit
