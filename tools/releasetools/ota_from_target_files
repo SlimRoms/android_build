@@ -593,6 +593,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   system_progress = 0.75
 
+  script.Print(" SlimLP Mod by ezio84 @ xda")
+  script.Print(" ")
   script.Print("                    _____________________ ")
   script.Print("                   /    www.slimroms.org |")
   script.Print("                  /                      |")
@@ -606,6 +608,13 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print("|              /     |   |   |   |   |   |")
   script.Print("|_____________/      \___^___^___^___^___/")
   script.Print(" ")
+
+  build = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+  script.Print("Compiled: %s"%(build));
+
+  device = GetBuildProp("ro.product.device", OPTIONS.info_dict)
+  model = GetBuildProp("ro.product.model", OPTIONS.info_dict)
+  script.Print("Device: %s (%s)"%(model, device));
 
   if OPTIONS.wipe_user_data:
     system_progress -= 0.1
@@ -693,6 +702,13 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     if block_based:
       script.Unmount("/system")
 
+  if block_based:
+    script.Print("Flashing SuperSU...")
+    common.ZipWriteStr(output_zip, "supersu/supersu.zip",
+                   ""+input_zip.read("SYSTEM/addon.d/UPDATE-SuperSU.zip"))
+    script.Mount("/system")
+    script.FlashSuperSU()
+
   script.ShowProgress(0.05, 5)
   script.WriteRawImage("/boot", "boot.img")
 
@@ -701,6 +717,11 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   if OPTIONS.extra_script is not None:
     script.AppendExtra(OPTIONS.extra_script)
+
+  # SuperSU leave /system unmounted while we need it mounted here to avoid
+  # a warning from non-Multirom TWRP
+  if block_based:
+    script.Mount("/system")
 
   script.UnmountAll()
 

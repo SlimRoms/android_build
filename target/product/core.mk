@@ -22,9 +22,7 @@
 
 PRODUCT_PACKAGES += \
     BasicDreams \
-    Browser \
     Calculator \
-    Calendar \
     CalendarProvider \
     CaptivePortalLogin \
     CertInstaller \
@@ -46,12 +44,15 @@ PRODUCT_PACKAGES += \
     libpac \
     PrintSpooler \
     ProxyHandler \
-    QuickSearchBox \
     Settings \
     SharedStorageBackup \
     Telecom \
     TeleService \
     VpnDialogs \
     MmsService
+
+#    Browser \
+#    Calendar \
+#   QuickSearchBox \
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_base.mk)
