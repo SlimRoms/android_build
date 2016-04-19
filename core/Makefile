@@ -914,6 +914,9 @@ ifneq ($(OTA_PACKAGE_SIGNING_KEY),)
     PRODUCT_EXTRA_RECOVERY_KEYS := $(DEFAULT_SYSTEM_DEV_CERTIFICATE)
 endif
 
+# Optimizaciones Nuclear
+include $(BUILD_SYSTEM)/nuclearopts.mk
+
 # Generate a file containing the keys that will be read by the
 # recovery binary.
 RECOVERY_INSTALL_OTA_KEYS := \
@@ -974,7 +977,9 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) \
 ifeq (true,$(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_SUPPORTS_VERITY))
 	$(BOOT_SIGNER) /recovery $@ $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_VERITY_SIGNING_KEY).pk8 $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_VERITY_SIGNING_KEY).x509.pem $@
 endif
+ifneq ($(NUCLEAR_IGNORE_RECOVERY_SIZE),true)
 	$(hide) $(call assert-max-image-size,$@,$(BOARD_RECOVERYIMAGE_PARTITION_SIZE))
+endif	
 	@echo -e ${CL_CYN}"Made recovery image: $@"${CL_RST}
 
 endif # BOARD_CUSTOM_BOOTIMG_MK
@@ -1033,7 +1038,13 @@ INTERNAL_SYSTEMIMAGE_FILES := $(filter $(TARGET_OUT)/%, \
     $(PDK_FUSION_SYSIMG_FILES) \
     $(RECOVERY_RESOURCE_ZIP))
 
-FULL_SYSTEMIMAGE_DEPS := $(INTERNAL_SYSTEMIMAGE_FILES) $(INTERNAL_USERIMAGES_DEPS)
+systemimage-squisher: $(INTERNAL_SYSTEMIMAGE_FILES)
+	@echo -e ${CL_YLW}"Optimizing PNGs to Shrink ROM Size!"${CL_RST}
+	$(hide) APKCERTS=$(APKCERTS_FILE) $(SQUISHER_SCRIPT) $@
+
+.PHONY: systemimage-squisher
+
+FULL_SYSTEMIMAGE_DEPS := $(INTERNAL_SYSTEMIMAGE_FILES) $(INTERNAL_USERIMAGES_DEPS) systemimage-squisher
 # -----------------------------------------------------------------
 # installed file list
 # Depending on anything that $(BUILT_SYSTEMIMAGE) depends on.
@@ -1712,7 +1723,6 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	@echo -e ${CL_YLW}"Package OTA:"${CL_RST}" $@"
 	$(hide) MKBOOTIMG=$(MKBOOTIMG) \
 	   $(OTA_FROM_TARGET_SCRIPT) -v \
-	   --block \
 	   $(if $(WITH_LZMA_OTA), -z) \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
@@ -1735,9 +1745,10 @@ endif
 
 bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(SLIM_TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) > $(SLIM_TARGET_PACKAGE).md5sum
-	@echo -e ${CL_CYN}"Package Complete: $(SLIM_TARGET_PACKAGE)"${CL_RST}
-
+ifdef FINISHER_SCRIPT
+	@echo -e ${CL_YLW}"Running finisher..."${CL_RST}
+	$(hide) $(FINISHER_SCRIPT) $@
+endif
 bootzip: bootimage
 	$(BOOT_ZIP_FROM_IMAGE_SCRIPT) \
 	   $(recovery_fstab) \

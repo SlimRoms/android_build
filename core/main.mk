@@ -431,6 +431,22 @@ ADDITIONAL_BUILD_PROPERTIES += net.bt.name=Android
 # the cause of ANRs in the content process
 ADDITIONAL_BUILD_PROPERTIES += dalvik.vm.stack-trace-file=/data/anr/traces.txt
 
+#añado al build.prop los tweaks de Alex
+#
+# tweaks BUILD.prop
+#
+#Performance 1.0 (libera ram y mejora autonomía de batería)
+#ADDITIONAL_BUILD_PROPERTIES += sysctl -w vm.oom_kill_allocating_task=1 
+#ADDITIONAL_BUILD_PROPERTIES += sysctl -w vm.vfs_cache_pressure=10 
+
+
+# Mejora el rendimiento de la bateria 
+ADDITIONAL_BUILD_PROPERTIES += ro.ril.disable.power.collapse=1 
+ADDITIONAL_BUILD_PROPERTIES += pm.sleep_mode=1 
+ 
+# Mejora rendimiento del touch 
+ADDITIONAL_BUILD_PROPERTIES += debug.performance.tuning=1
+
 # ------------------------------------------------------------
 # Define a function that, given a list of module tags, returns
 # non-empty if that module should be installed in /system.

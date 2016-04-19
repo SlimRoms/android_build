@@ -29,6 +29,13 @@ ifdef CXX_WRAPPER
   endif
 endif
 
+include $(BUILD_SYSTEM)/nuclearopts.mk
+
+CLANG_CONFIG_EXTRA_CFLAGS += $(NUCLEAR_CLANG_CFLAGS)
+CLANG_CONFIG_EXTRA_CPPFLAGS += $(NUCLEAR_CLANG_CPPFLAGS)
+CLANG_CONFIG_EXTRA_LDFLAGS += $(NUCLEAR_CLANG_LDFLAGS)
+
+
 # Clang flags for all host or target rules
 CLANG_CONFIG_EXTRA_ASFLAGS :=
 CLANG_CONFIG_EXTRA_CFLAGS :=
@@ -57,7 +64,8 @@ CLANG_CONFIG_UNKNOWN_CFLAGS := \
   -Wmaybe-uninitialized \
   -Wno-maybe-uninitialized \
   -Wno-error=maybe-uninitialized \
-  -fno-canonical-system-headers
+  -fno-canonical-system-headers \
+  $(NUCLEAR_CLANG_UNKNOWN_FLAGS)
 
 # Clang flags for all host rules
 CLANG_CONFIG_HOST_EXTRA_ASFLAGS :=
@@ -106,3 +114,9 @@ ADDRESS_SANITIZER_CONFIG_EXTRA_STATIC_LIBRARIES := libasan
 # This allows us to use the superset of functionality that compiler-rt
 # provides to Clang (for supporting features like -ftrapv).
 COMPILER_RT_CONFIG_EXTRA_STATIC_LIBRARIES := libcompiler_rt-extras
+
+
+# Use Snapdragon LLVM Compiler for Android
+ifeq ($(USE_CLANG_QCOM),true)
+include $(BUILD_SYSTEM)/clang/TARGET_arm_qcom.mk
+endif

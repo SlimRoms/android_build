@@ -57,6 +57,7 @@ $(combo_2nd_arch_prefix)TARGET_TOOLCHAIN_ROOT := prebuilts/gcc/$(HOST_PREBUILT_T
 $(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX := $($(combo_2nd_arch_prefix)TARGET_TOOLCHAIN_ROOT)/bin/arm-linux-androideabi-
 endif
 
+
 $(combo_2nd_arch_prefix)TARGET_CC := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)gcc$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_CXX := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)g++$(HOST_EXECUTABLE_SUFFIX)
 $(combo_2nd_arch_prefix)TARGET_AR := $($(combo_2nd_arch_prefix)TARGET_TOOLS_PREFIX)ar$(HOST_EXECUTABLE_SUFFIX)
@@ -67,7 +68,10 @@ $(combo_2nd_arch_prefix)TARGET_STRIP := $($(combo_2nd_arch_prefix)TARGET_TOOLS_P
 
 $(combo_2nd_arch_prefix)TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
-$(combo_2nd_arch_prefix)TARGET_arm_CFLAGS :=    -O2 \
+#Nuclear Optimizations
+include $(BUILD_SYSTEM)/nuclearopts.mk
+
+$(combo_2nd_arch_prefix)TARGET_arm_CFLAGS :=    $(NUCLEAR_GCC_CFLAGS_ARM) \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
@@ -77,6 +81,10 @@ $(combo_2nd_arch_prefix)TARGET_thumb_CFLAGS :=  -mthumb \
                         -Os \
                         -fomit-frame-pointer \
                         -fno-strict-aliasing
+
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += $(NUCLEAR_GCC_CFLAGS)
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_CPPFLAGS += $(NUCLEAR_GCC_CPPFLAGS)
+$(combo_2nd_arch_prefix)TARGET_GLOBAL_LDFLAGS += $(NUCLEAR_GCC_LDFLAGS)                        
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
 # or in your environment to force a full arm build, even for
@@ -114,7 +122,7 @@ $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += \
 # "-Wall -Werror" due to a commom idiom "ALOGV(mesg)" where ALOGV is turned
 # into no-op in some builds while mesg is defined earlier. So we explicitly
 # disable "-Wunused-but-set-variable" here.
-ifneq ($(filter 4.6 4.6.% 4.7 4.7.% 4.8, $($(combo_2nd_arch_prefix)TARGET_GCC_VERSION)),)
+ifneq ($(filter 4.6 4.6.% 4.7 4.7.% 4.8 4.8.% 4.9 4.9.% 5.0 5.1, $($(combo_2nd_arch_prefix)TARGET_GCC_VERSION)),)
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -fno-builtin-sin \
 			-fno-strict-volatile-bitfields
 endif
@@ -143,9 +151,9 @@ $(combo_2nd_arch_prefix)TARGET_GLOBAL_CFLAGS += -mthumb-interwork
 $(combo_2nd_arch_prefix)TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 
 # More flags/options can be added here
+
 $(combo_2nd_arch_prefix)TARGET_RELEASE_CFLAGS := \
 			-DNDEBUG \
-			-g \
 			-Wstrict-aliasing=2 \
 			-fgcse-after-reload \
 			-frerun-cse-after-loop \
