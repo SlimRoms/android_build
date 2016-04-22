@@ -9,6 +9,7 @@ ifneq ($(BUILD_WITH_COLORS),0)
   CL_BLU="\033[34m"
   CL_MAG="\033[35m"
   CL_CYN="\033[36m"
+  CL_SLIM="\033[38;5;24m"
   CL_RST="\033[0m"
 endif
 
@@ -1918,6 +1919,16 @@ otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(SLIM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) > $(SLIM_TARGET_PACKAGE).md5sum
+	@echo -e ${CL_SLIM}"                               _______________________________________________   "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                              /                              www.slimroms.org |  "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                             /   _____________________________________________|  "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                            /   /                                                "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                           /   /  _  _       ______                              "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                          /   /  | |(_)     (_____ \                             "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                         /   /   | | _ ____  _____) )___  ____   ___             "${CL_SLIM}
+	@echo -e ${CL_SLIM}"   _____________________/   /    | || |    \|  __  // _ \|    \ /___)            "${CL_SLIM}
+	@echo -e ${CL_SLIM}"  |                        /     | || | | | | |  \ \ |_| | | | |___ |            "${CL_SLIM}
+	@echo -e ${CL_SLIM}"  |_______________________/       \_)_|_|_|_|_|   |_\___/|_|_|_(___/             "${CL_SLIM}
 	@echo -e ${CL_CYN}"Package Complete: $(SLIM_TARGET_PACKAGE)"${CL_RST}
 
 bootzip: bootimage
