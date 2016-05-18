@@ -723,17 +723,17 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   device_specific.FullOTA_PostValidate()
 
   if OPTIONS.backuptool:
-    script.ShowProgress(0.02, 10)
+    script.ShowProgress(0.02, 0)
     if block_based:
       script.Mount("/system")
     script.RunBackup("restore")
     if block_based:
       script.Unmount("/system")
 
-  script.ShowProgress(0.05, 5)
+  script.ShowProgress(0.05, 0)
   script.WriteRawImage("/boot", "boot.img")
 
-  script.ShowProgress(0.2, 10)
+  script.ShowProgress(0.2, 0)
   device_specific.FullOTA_InstallEnd()
 
   if OPTIONS.extra_script is not None:
@@ -742,7 +742,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.UnmountAll()
 
   if OPTIONS.wipe_user_data:
-    script.ShowProgress(0.1, 10)
+    script.ShowProgress(0.1, 0)
     script.FormatPartition("/data")
 
   if OPTIONS.two_step:
@@ -1033,7 +1033,7 @@ else
         # partition.
         print "boot image changed; including patch."
         script.Print("Patching boot image...")
-        script.ShowProgress(0.1, 10)
+        script.ShowProgress(0.1, 0)
         script.ApplyPatch("%s:%s:%d:%s:%d:%s"
                           % (boot_type, boot_device,
                              source_boot.size, source_boot.sha1,
@@ -1455,7 +1455,7 @@ else
   else:
     print "recovery image unchanged; skipping."
 
-  script.ShowProgress(0.1, 10)
+  script.ShowProgress(0.1, 0)
 
   target_symlinks = CopyPartitionFiles(system_items, target_zip, None)
   if vendor_diff:
