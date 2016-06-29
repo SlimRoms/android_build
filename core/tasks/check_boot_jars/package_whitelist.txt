@@ -242,3 +242,8 @@ com\.google\.vr\.platform.*
 # Packages used for Android in Chrome OS
 org\.chromium\.arc
 org\.chromium\.arc\..*
+
+###################################################
+# SlimRoms
+slim
+org\.slim\.framework\.internal
