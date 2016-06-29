@@ -436,11 +436,24 @@ framework_res_package_export_deps := $(framework_res_package_export)
 else # LOCAL_SDK_RES_VERSION
 framework_res_package_export := \
     $(call intermediates-dir-for,APPS,framework-res,,COMMON)/package-export.apk
+
+# Avoid possible circular dependency with our framework
+ifneq ($(LOCAL_IGNORE_SUBDIR), true)
+slim_framework_res_package_export := \
+    $(call intermediates-dir-for,APPS,org.slim.framework-res,,COMMON)/package-export.apk
+endif #LOCAL_IGNORE_SUBDIR
+
 # We can't depend directly on the export.apk file; it won't get its
 # PRIVATE_ vars set up correctly if we do.  Instead, depend on the
 # corresponding R.stamp file, which lists the export.apk as a dependency.
 framework_res_package_export_deps := \
     $(dir $(framework_res_package_export))src/R.stamp
+
+ifneq ($(LOCAL_IGNORE_SUBDIR), true)
+slim_framework_res_package_export_deps := \
+    $(dir $(slim_framework_res_package_export))src/R.stamp
+endif # LOCAL_IGNORE_SUBDIR
+
 endif # LOCAL_SDK_RES_VERSION
 all_library_res_package_exports := \
     $(framework_res_package_export) \
@@ -451,6 +464,14 @@ all_library_res_package_export_deps := \
     $(framework_res_package_export_deps) \
     $(foreach lib,$(LOCAL_RES_LIBRARIES),\
         $(call intermediates-dir-for,APPS,$(lib),,COMMON)/src/R.stamp)
+
+ifneq ($(LOCAL_IGNORE_SUBDIR), true)
+all_library_res_package_exports += \
+    $(slim_framework_res_package_export)
+all_library_res_package_export_deps += \
+    $(slim_framework_res_package_export_deps)
+endif # LOCAL_IGNORE_SUBDIR
+
 $(resource_export_package) $(R_file_stamp) $(LOCAL_BUILT_MODULE): $(all_library_res_package_export_deps)
 $(LOCAL_INTERMEDIATE_TARGETS): \
     PRIVATE_AAPT_INCLUDES := $(all_library_res_package_exports)
