@@ -132,6 +132,7 @@ endif
 
 # The order of PRODUCT_SYSTEM_SERVER_JARS matters.
 PRODUCT_SYSTEM_SERVER_JARS := \
+    services.slim \
     services \
     ethernet-service \
     wifi-service \
