@@ -189,7 +189,7 @@ FIND_LEAVES_EXCLUDES := $(addprefix --prune=, $(OUT_DIR) $(SCAN_EXCLUDE_DIRS) .r
 $(call project-set-path-variant,recovery,RECOVERY_VARIANT,bootable/recovery)
 
 -include vendor/extra/BoardConfigExtra.mk
--include vendor/cm/config/BoardConfigSLIM.mk
+-include vendor/slim/config/BoardConfigSLIM.mk
 
 # The build system exposes several variables for where to find the kernel
 # headers:
@@ -658,10 +658,10 @@ else
 endif
 
 # Rules for QCOM targets
-include $(BUILD_SYSTEM)/qcom_target.mk
+include vendor/slim/build/core/qcom_target.mk
 
 # Rules for MTK targets
-include $(BUILD_SYSTEM)/mtk_target.mk
+include vendor/slim/build/core/mtk_target.mk
 
 # ###############################################################
 # Set up final options.
