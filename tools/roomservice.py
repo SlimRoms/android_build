@@ -360,11 +360,12 @@ def main():
         repo_path = "device/%s/%s" % (manufacturer, device)
         adding = [{'repository': repo_name, 'target_path': repo_path}]
 
-        add_to_manifest(adding, fallback_branch)
+        if not is_in_manifest(repo_path):
+            add_to_manifest(adding, fallback_branch)
 
-        print("Syncing repository to retrieve project.")
-        os.system('repo sync --force-sync %s' % repo_path)
-        print("Repository synced!")
+            print("Syncing repository to retrieve project.")
+            os.system('repo sync --force-sync %s' % repo_path)
+            print("Repository synced!")
 
         fetch_dependencies(repo_path, fallback_branch)
         print("Done")
