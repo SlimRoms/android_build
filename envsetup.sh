@@ -687,6 +687,8 @@ function lunch()
         build/tools/roomservice.py $product
         popd > /dev/null
         check_product $product
+    else
+        build/tools/roomservice.py $product true
     fi
     TARGET_PRODUCT=$product \
     TARGET_BUILD_VARIANT=$variant \
