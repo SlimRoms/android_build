@@ -2249,7 +2249,6 @@ otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(SLIM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) > $(SLIM_TARGET_PACKAGE).md5sum
-	@echo -e ${CL_SLIM}" "${CL_SLIM}
 	@echo -e ${CL_SLIM}"                              _______________________________________________  "${CL_SLIM}
 	@echo -e ${CL_SLIM}"                             /                                  slimroms.org | "${CL_SLIM}
 	@echo -e ${CL_SLIM}"                            /   _____________________________________________| "${CL_SLIM}
