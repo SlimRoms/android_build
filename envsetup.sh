@@ -1618,8 +1618,10 @@ function mk_timer()
     echo
     if [ $ret -eq 0 ] ; then
         echo -n "${color_success}#### make completed successfully "
+        successful_build=1
     else
         echo -n "${color_failed}#### make failed to build some targets "
+        successful_build=0
     fi
     if [ $hours -gt 0 ] ; then
         printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
@@ -1665,6 +1667,28 @@ function provision()
 function make()
 {
     mk_timer $(get_make_command) "$@"
+}
+
+function mush() #make and push to device through adb
+{
+    adb_state=$(adb wait-for-device get-state)
+    if [[ "$adb_state" == *"command not found"* ]]; then
+        echo $adb_state
+        echo "adb binary not found."
+    elif [[ "$adb_state" == *"error"* ]]; then
+        echo $adb_state
+        echo "adb not connected to device."
+    else
+        requested_product=$TARGET_PRODUCT
+        requested_product="${requested_product#slim_}"
+        successful_build=0
+        mk_timer $(get_make_command) "$@"
+        if [ $successful_build -eq 1 ] ; then
+            . vendor/slim/build/adbpush.sh $requested_product $(readlink -m ./out)
+        else
+            echo "build failed.  nothing pushed to device."
+        fi
+    fi
 }
 
 function __detect_shell() {
