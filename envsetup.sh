@@ -1671,6 +1671,14 @@ function make()
     mk_timer $(get_make_command) "$@"
 }
 
+function mush() #make and push to device through adb
+{
+    requested_product=$TARGET_PRODUCT
+    requested_product="${requested_product#slim_}"
+    . vendor/slim/build/adbpush.sh $requested_product $(readlink -m ./out) #last arg is out dir from scope of adbpush.sh
+    mk_timer $(get_make_command) "$@"
+}
+
 function __detect_shell() {
     case `ps -o command -p $$` in
         *bash*)
