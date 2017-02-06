@@ -2267,7 +2267,7 @@ bacon: otapackage
 	@echo -e ${CL_SLIM}" |                        /     | || | | | |"${CL_SGRY}" |  \ \ |_| | | | |___ |           "${CL_SLIM}
 	@echo -e ${CL_SLIM}" |_______________________/       \_)_|_|_|_|"${CL_SGRY}"_|   |_\___/|_|_|_(___/            "${CL_SLIM}
 	@echo -e ${CL_SLIM}" "${CL_SLIM}
-	@echo -e ${CL_CYN}"Package Complete: $(SLIM_TARGET_PACKAGE)"${CL_RST}
+	@echo -e ${CL_CYN}"Package Complete: $(SLIM_TARGET_PACKAGE)" >&2${CL_RST}
 
 endif    # build_ota_package
 # -----------------------------------------------------------------
