@@ -27,6 +27,11 @@ print_build_config_vars := \
   OUT_DIR \
   AUX_OS_VARIANT_LIST
 
+ifneq ($(RECOVERY_VARIANT),)
+print_build_config_vars += \
+  RECOVERY_VARIANT
+endif
+
 ifeq ($(TARGET_BUILD_PDK),true)
 print_build_config_vars += \
   TARGET_BUILD_PDK \
