@@ -2259,7 +2259,7 @@ SLIM_TARGET_PACKAGE := $(PRODUCT_OUT)/$(SLIM_MOD_VERSION).zip
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
 bacon: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(SLIM_TARGET_PACKAGE)
-	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) > $(SLIM_TARGET_PACKAGE).md5sum
+	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) | cut -d ' ' -f1 > $(SLIM_TARGET_PACKAGE).md5sum
 	@echo -e " "
 	@echo -e ${CL_SLIM}" "${CL_SLIM}
 	@echo -e ${CL_SLIM}"                              _______________________________________________  "${CL_SLIM}
