@@ -557,7 +557,7 @@ def WriteFullOTAPackage(input_zip, output_zip):
       script=script,
       input_tmp=OPTIONS.input_tmp,
       metadata=metadata,
-      info_dict=OPTIONS.source_info_dict)
+      info_dict=OPTIONS.info_dict)
 
   has_recovery_patch = HasRecoveryPatch(input_zip)
   block_based = OPTIONS.block_based and has_recovery_patch
@@ -1244,7 +1244,7 @@ def WriteIncrementalOTAPackage(target_zip, source_zip, output_zip):
       output_zip=output_zip,
       script=script,
       metadata=metadata,
-      info_dict=OPTIONS.info_dict)
+      info_dict=OPTIONS.source_info_dict)
 
   system_diff = FileDifference("system", source_zip, target_zip, output_zip)
   script.Mount("/system", recovery_mount_options)
