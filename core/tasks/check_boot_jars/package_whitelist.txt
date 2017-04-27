@@ -119,6 +119,9 @@ libcore\..*
 android\..*
 com\.android\..*
 
+# CAF
+org\.codeaurora\..*
+
 
 ###################################################
 # legacy-test.jar
