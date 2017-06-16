@@ -272,7 +272,6 @@ endif
 			TARGET_CPU_ABI="$(TARGET_CPU_ABI)" \
 			TARGET_CPU_ABI2="$(TARGET_CPU_ABI2)" \
 			TARGET_AAPT_CHARACTERISTICS="$(TARGET_AAPT_CHARACTERISTICS)" \
-			TARGET_UNIFIED_DEVICE="$(TARGET_UNIFIED_DEVICE)" \
 			TARGET_SKIP_DEFAULT_LOCALE="$(TARGET_SKIP_DEFAULT_LOCALE)" \
 			TARGET_SKIP_PRODUCT_DEVICE="$(TARGET_SKIP_PRODUCT_DEVICE)" \
 			$(PRODUCT_BUILD_PROP_OVERRIDES) \
@@ -2159,7 +2158,6 @@ else
 	$(hide) build/tools/getb64key.py $(DEFAULT_SYSTEM_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
 endif
 	$(hide) echo "ota_override_device=$(OTA_SCRIPT_OVERRIDE_DEVICE)" >> $(zip_root)/META/misc_info.txt
-	$(hide) echo "ota_override_prop=$(OTA_SCRIPT_OVERRIDE_PROP)" >> $(zip_root)/META/misc_info.txt
 ifdef BOARD_PREBUILT_VENDORIMAGE
 	$(hide) mkdir -p $(zip_root)/IMAGES
 	$(hide) cp $(INSTALLED_VENDORIMAGE_TARGET) $(zip_root)/IMAGES/
@@ -2228,13 +2226,6 @@ ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
     OTA_SCRIPT_OVERRIDE_DEVICE := auto
 else
     OTA_SCRIPT_OVERRIDE_DEVICE := $(TARGET_OTA_ASSERT_DEVICE)
-endif
-
-ifneq ($(TARGET_UNIFIED_DEVICE),)
-    OTA_SCRIPT_OVERRIDE_PROP := true
-    ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
-        OTA_SCRIPT_OVERRIDE_DEVICE := $(TARGET_DEVICE)
-    endif
 endif
 
 ifneq ($(BLOCK_BASED_OTA),false)
