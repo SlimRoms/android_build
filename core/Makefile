@@ -1349,7 +1349,7 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) $(ADBD) \
 		$(call build-recoveryimage-target, $@)
 endif
 
-$(recovery_uncompressed_ramdisk): $(MKBOOTFS) \
+$(recovery_uncompressed_ramdisk): $(MKBOOTFS) $(ADBD) \
 		$(INSTALLED_RAMDISK_TARGET) \
 		$(INSTALLED_BOOTIMAGE_TARGET) \
 		$(INTERNAL_RECOVERYIMAGE_FILES) \
@@ -1371,7 +1371,7 @@ $(recovery_ramdisk): $(MINIGZIP) \
 		$(hide) $(RECOVERY_RAMDISK_COMPRESSOR) < $(recovery_uncompressed_ramdisk) > $@
 
 ifndef BOARD_CUSTOM_BOOTIMG_MK
-$(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) $(recovery_kernel) $(ADBD)   \
+$(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) $(recovery_kernel) \
 		$(RECOVERYIMAGE_EXTRA_DEPS)
 		@echo ----- Making recovery image ------
 		$(call build-recoveryimage-target, $@)
