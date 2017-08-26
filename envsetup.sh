@@ -581,12 +581,30 @@ function add_lunch_combo()
 function print_lunch_menu()
 {
     local uname=$(uname)
-
-    echo "You're building on" $uname
-    if [ "$(uname)" = "Darwin" ] ; then
-       echo "  (ohai, Ibish!)"
-    fi
     echo
+
+    echo ""
+    tput setaf 1;
+    tput bold;
+    echo "  ▄████ ▒███████▒ ▒█████    ██████  ██▓███  "
+    echo " ██▒ ▀█▒▒ ▒ ▒ ▄▀░▒██▒  ██▒▒██    ▒ ▓██░  ██▒"
+    echo "▒██░▄▄▄░░ ▒ ▄▀▒░ ▒██░  ██▒░ ▓██▄   ▓██░ ██▓▒"
+    echo "░▓█  ██▓  ▄▀▒   ░▒██   ██░  ▒   ██▒▒██▄█▓▒ ▒"
+    echo "░▒▓███▀▒▒███████▒░ ████▓▒░▒██████▒▒▒██▒ ░  ░"
+    echo " ░▒   ▒ ░▒▒ ▓░▒░▒░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░▒▓▒░ ░  ░"
+    echo "  ░   ░ ░░▒ ▒ ░ ▒  ░ ▒ ▒░ ░ ░▒  ░ ░░▒ ░     "
+    echo "░ ░   ░ ░ ░ ░ ░ ░░ ░ ░ ▒  ░  ░  ░  ░░       "
+    echo "      ░   ░ ░        ░ ░        ░           "
+    echo "        ░                                   "
+    tput sgr0;
+    echo ""
+    echo "                      Welcome to the device menu                      "
+    echo ""
+    tput bold;
+    echo "     Below are all the devices currently available to be compiled     "
+    tput sgr0;
+    echo ""
+
     if [ "z${GZOSP_DEVICES_ONLY}" != "z" ]; then
        echo "Breakfast menu... pick a combo:"
     else
@@ -613,7 +631,7 @@ function brunch()
 {
     breakfast $*
     if [ $? -eq 0 ]; then
-        mka bacon
+        mka gzosp
     else
         echo "No such item in brunch menu. Try 'breakfast'"
         return 1
@@ -1667,6 +1685,26 @@ function mka() {
             schedtool -B -n 1 -e ionice -n 1 make -j `cat /proc/cpuinfo | grep "^processor" | wc -l` "$@"
             ;;
     esac
+}
+
+function cmka() {
+    if [ ! -z "$1" ]; then
+        for i in "$@"; do
+            case $i in
+                bacon|gzosp|otapackage|systemimage)
+                    mka installclean
+                    mka $i
+                    ;;
+                *)
+                    mka clean-$i
+                    mka $i
+                    ;;
+            esac
+        done
+    else
+        mka clean
+        mka
+    fi
 }
 
 # Print colored exit condition
