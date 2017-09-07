@@ -581,12 +581,31 @@ function add_lunch_combo()
 function print_lunch_menu()
 {
     local uname=$(uname)
-
-    echo "You're building on" $uname
-    if [ "$(uname)" = "Darwin" ] ; then
-       echo "  (ohai, Ibish!)"
-    fi
     echo
+    echo ""
+    tput setaf 1;
+    tput bold;
+    echo " "
+    echo "                              _______________________________________________  "
+    echo "                             /                                  slimroms.org | "
+    echo "                            /   _____________________________________________| "
+    echo "                           /   /                                               "
+    echo "                          /   /  _  _       ______                             "
+    echo "                         /   /  | |(_)     (_____ \                            "
+    echo "                        /   /   | | _ _____ _____) )___  _____  ___            "
+    echo "  _____________________/   /    | || |     |  __  // _ \|     |/___)           "
+    echo " |                        /     | || | | | | |  \ \ |_| | | | |___ |           "
+    echo " |_______________________/       \_)_|_|_|_|_|   |_\___/|_|_|_(___/            "
+    echo " "
+    tput sgr0;
+    echo ""
+    echo "                      Welcome to the device menu                      "
+    echo ""
+    tput bold;
+    echo "     Below are all the devices currently available to be compiled     "
+    tput sgr0;
+    echo ""
+
     if [ "z${SLIM_DEVICES_ONLY}" != "z" ]; then
        echo "Breakfast menu... pick a combo:"
     else
@@ -613,7 +632,7 @@ function brunch()
 {
     breakfast $*
     if [ $? -eq 0 ]; then
-        mka bacon
+        mka slim
     else
         echo "No such item in brunch menu. Try 'breakfast'"
         return 1
@@ -716,13 +735,9 @@ function lunch()
         return 1
     fi
 
-    export TARGET_PRODUCT=$(get_build_var TARGET_PRODUCT)
-    export TARGET_BUILD_VARIANT=$(get_build_var TARGET_BUILD_VARIANT)
-    if [ -n "$version" ]; then
-      export TARGET_PLATFORM_VERSION=$(get_build_var TARGET_PLATFORM_VERSION)
-    else
-      unset TARGET_PLATFORM_VERSION
-    fi
+    export TARGET_PRODUCT=$product
+    export TARGET_BUILD_VARIANT=$variant
+    export TARGET_PLATFORM_VERSION=$version
     export TARGET_BUILD_TYPE=release
 
     echo
@@ -1671,6 +1686,26 @@ function mka() {
             schedtool -B -n 1 -e ionice -n 1 make -j `cat /proc/cpuinfo | grep "^processor" | wc -l` "$@"
             ;;
     esac
+}
+
+function cmka() {
+    if [ ! -z "$1" ]; then
+        for i in "$@"; do
+            case $i in
+                bacon|slim|otapackage|systemimage)
+                    mka installclean
+                    mka $i
+                    ;;
+                *)
+                    mka clean-$i
+                    mka $i
+                    ;;
+            esac
+        done
+    else
+        mka clean
+        mka
+    fi
 }
 
 # Print colored exit condition
