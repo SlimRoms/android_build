@@ -113,11 +113,6 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
       Generate a log file that shows the differences in the source and target
       builds for an incremental package. This option is only meaningful when
       -i is specified.
-
-  --backup <boolean>
-      Enable or disable the execution of backuptool.sh.
-      Disabled by default.
-
   --payload_signer <signer>
       Specify the signer when signing the payload and metadata for A/B OTAs.
       By default (i.e. without this flag), it calls 'openssl pkeyutl' to sign
@@ -2109,8 +2104,6 @@ def main(argv):
       OPTIONS.gen_verify = True
     elif o == ("--log_diff",):
       OPTIONS.log_diff = a
-    elif o in ("--backup",):
-      OPTIONS.backuptool = bool(a.lower() == 'true')
     elif o == "--payload_signer":
       OPTIONS.payload_signer = a
     elif o == "--payload_signer_args":
@@ -2144,7 +2137,6 @@ def main(argv):
                                  "stash_threshold=",
                                  "gen_verify",
                                  "log_diff=",
-                                 "backup=",
                                  "payload_signer=",
                                  "payload_signer_args=",
                              ], extra_option_handler=option_handler)
@@ -2175,6 +2167,8 @@ def main(argv):
     OPTIONS.override_device = OPTIONS.info_dict.get("ota_override_device")
   if "ota_override_prop" in OPTIONS.info_dict:
     OPTIONS.override_prop = OPTIONS.info_dict.get("ota_override_prop") == "true"
+  if "ota_backuptool" in OPTIONS.info_dict:
+    OPTIONS.backuptool = OPTIONS.info_dict.get("ota_backuptool") == "true"
 
   ab_update = OPTIONS.info_dict.get("ab_update") == "true"
 
