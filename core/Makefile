@@ -1971,6 +1971,10 @@ endif
 
 endif
 
+ifdef TARGET_NEEDS_DTBOIMAGE
+INSTALLED_DTBOIMAGE_TARGET := $(PRODUCT_OUT)/dtbo.img
+endif
+
 # Convert to lower case without requiring a shell, which isn't cacheable.
 to-lower = $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst F,f,$(subst G,g,\
 $(subst H,h,$(subst I,i,$(subst J,j,$(subst K,k,$(subst L,l,$(subst M,m,$(subst N,n,$(subst O,o,\
@@ -2646,13 +2650,14 @@ ifdef BOARD_PREBUILT_VENDORIMAGE
 	$(hide) mkdir -p $(zip_root)/IMAGES
 	$(hide) cp $(INSTALLED_VENDORIMAGE_TARGET) $(zip_root)/IMAGES/
 endif
+
 ifdef PRODUCT_DEFAULT_DEV_CERTIFICATE
 	$(hide) vendor/slimbuild/tools/getb64key.py $(PRODUCT_DEFAULT_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
 else
 	$(hide) vendor/slim/build/tools/getb64key.py $(DEFAULT_SYSTEM_DEV_CERTIFICATE).x509.pem > $(zip_root)/META/releasekey.txt
 endif
 
-ifdef BOARD_PREBUILT_DTBOIMAGE
+ifdef INSTALLED_DTBOIMAGE_TARGET
 	$(hide) mkdir -p $(zip_root)/PREBUILT_IMAGES
 	$(hide) cp $(INSTALLED_DTBOIMAGE_TARGET) $(zip_root)/PREBUILT_IMAGES/
 	$(hide) echo "has_dtbo=true" >> $(zip_root)/META/misc_info.txt
@@ -2666,7 +2671,7 @@ ifdef BOARD_AVB_DTBO_KEY_PATH
 	    >> $(zip_root)/META/misc_info.txt
 endif # BOARD_AVB_DTBO_KEY_PATH
 endif # BOARD_AVB_ENABLE
-endif # BOARD_PREBUILT_DTBOIMAGE
+endif # INSTALLED_DTBOIMAGE_TARGET
 	@# The radio images in BOARD_PACK_RADIOIMAGES will be additionally copied from RADIO/ into
 	@# IMAGES/, which then will be added into <product>-img.zip. Such images must be listed in
 	@# INSTALLED_RADIOIMAGE_TARGET.
