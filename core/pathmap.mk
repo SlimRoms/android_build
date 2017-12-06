@@ -41,6 +41,7 @@ pathmap_INCL := \
     libhardware_legacy:hardware/libhardware_legacy/include \
     libril:hardware/ril/include \
     opengl-tests-includes:frameworks/native/opengl/tests/include \
+    recovery:bootable/recovery \
     system-core:system/core/include \
     audio:system/media/audio/include \
     audio-effects:system/media/audio_effects/include \
@@ -62,12 +63,6 @@ $(foreach n,$(1),$(patsubst $(n):%,%,$(filter $(n):%,$(pathmap_INCL))))
 endef
 
 #
-# Many modules expect to be able to say "#include <jni.h>",
-# so make it easy for them to find the correct path.
-#
-JNI_H_INCLUDE := libnativehelper/include/nativehelper
-
-#
 # A list of all source roots under frameworks/base, which will be
 # built into the android.jar.
 #
@@ -86,6 +81,7 @@ FRAMEWORKS_BASE_SUBDIRS := \
 	    telecomm \
 	    telephony \
 	    wifi \
+	    lowpan \
 	    keystore \
 	    rs \
 	 )
