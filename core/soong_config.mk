@@ -89,7 +89,7 @@ $(SOONG_VARIABLES): FORCE slim_soong
 	echo '    "BtConfigIncludeDir": "$(BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR)",'; \
 	echo ''; \
 	echo '    "DeviceKernelHeaders": $(call json_list,$(strip $(TARGET_PROJECT_SYSTEM_INCLUDES)))'; \
-	echo '}') > $(SOONG_VARIABLES_TMP); \
+	echo '}') >> $(SOONG_VARIABLES_TMP); \
 	if ! cmp -s $(SOONG_VARIABLES_TMP) $(SOONG_VARIABLES); then \
 	  mv $(SOONG_VARIABLES_TMP) $(SOONG_VARIABLES); \
 	else \
