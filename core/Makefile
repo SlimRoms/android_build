@@ -2753,6 +2753,7 @@ ifneq ($(LINEAGE_BUILD),)
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 endif
+endif
 
 ifeq ($(AB_OTA_UPDATER),true)
 $(INTERNAL_OTA_PACKAGE_TARGET): $(BRILLO_UPDATE_PAYLOAD)
