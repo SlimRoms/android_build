@@ -1,1 +1,4 @@
-java
+#!/bin/bash
+
+echo "Error: JAVA_NOT_REQUIRED=true, $(basename $0) is unavailable." 1>&2
+exit 1

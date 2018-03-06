@@ -351,24 +351,6 @@ ifeq ($(filter-out $(INTERNAL_MODIFIER_TARGETS),$(MAKECMDGOALS)),)
 $(INTERNAL_MODIFIER_TARGETS): $(DEFAULT_GOAL)
 endif
 
-# These targets are going to delete stuff, don't bother including
-# the whole directory tree if that's all we're going to do
-ifeq ($(MAKECMDGOALS),clean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),clobber)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),novo)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),dataclean)
-dont_bother := true
-endif
-ifeq ($(MAKECMDGOALS),installclean)
-dont_bother := true
-endif
-
 #
 # Typical build; include any Android.mk files we can find.
 #
@@ -1179,14 +1161,6 @@ endif  # samplecode in $(MAKECMDGOALS)
 
 .PHONY: findbugs
 findbugs: $(INTERNAL_FINDBUGS_HTML_TARGET) $(INTERNAL_FINDBUGS_XML_TARGET)
-
-# This should be almost as good as a clobber but keeping many of the time intensive files - DHO
-.PHONY: novo
-novo:
-	@rm -rf $(OUT_DIR)/target/*
-	@echo -e ${CL_GRN}"Target directory removed."${CL_RST}
-
-# The rules for dataclean and installclean are defined in cleanbuild.mk.
 
 #xxx scrape this from ALL_MODULE_NAME_TAGS
 .PHONY: modules

@@ -168,7 +168,7 @@ include $(BUILD_SYSTEM)/node_fns.mk
 include $(BUILD_SYSTEM)/product.mk
 include $(BUILD_SYSTEM)/device.mk
 
-# A Slim build needs only the Slim product makefiles.
+# A Lineage build needs only the Lineage product makefiles.
 ifneq ($(SLIM_BUILD),)
   all_product_configs := $(shell find device -path "*/$(SLIM_BUILD)/slim.mk")
 else
@@ -375,6 +375,13 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
 PRODUCT_BUILD_PROP_OVERRIDES := \
     $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_BUILD_PROP_OVERRIDES))
 .KATI_READONLY := PRODUCT_BUILD_PROP_OVERRIDES
+
+# A list of property assignments, like "key = value", with zero or more
+# whitespace characters on either side of the '='.
+# used for adding properties to default.prop of system partition
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES := \
+    $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_SYSTEM_DEFAULT_PROPERTIES))
+.KATI_READONLY := PRODUCT_SYSTEM_DEFAULT_PROPERTIES
 
 # Should we use the default resources or add any product specific overlays
 PRODUCT_PACKAGE_OVERLAYS := \

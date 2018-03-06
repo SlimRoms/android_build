@@ -188,12 +188,12 @@ OPTIONS.log_diff = None
 OPTIONS.payload_signer = None
 OPTIONS.payload_signer_args = []
 OPTIONS.extracted_input = None
+OPTIONS.key_passwords = []
 OPTIONS.override_device = 'auto'
 OPTIONS.backuptool = False
-OPTIONS.key_passwords = []
 
 METADATA_NAME = 'META-INF/com/android/metadata'
-UNZIP_PATTERN = ['IMAGES/*', 'META/*']
+UNZIP_PATTERN = ['IMAGES/*', 'META/*', 'INSTALL/*', 'SYSTEM/build.prop']
 
 
 def SignOutput(temp_zip_name, output_zip_name):
@@ -382,13 +382,12 @@ def AddCompatibilityArchive(target_zip, output_zip, system_included=True,
 
 
 def CopyInstallTools(output_zip):
-  oldcwd = os.getcwd()
-  os.chdir(os.getenv('OUT'))
-  for root, subdirs, files in os.walk("install"):
-    for f in files:
-      p = os.path.join(root, f)
-      output_zip.write(p, p)
-  os.chdir(oldcwd)
+  install_path = os.path.join(OPTIONS.input_tmp, "INSTALL")
+  for root, subdirs, files in os.walk(install_path):
+     for f in files:
+      install_source = os.path.join(root, f)
+      install_target = os.path.join("install", os.path.relpath(root, install_path), f)
+      output_zip.write(install_source, install_target)
 
 
 def WriteFullOTAPackage(input_zip, output_zip):
@@ -503,14 +502,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   if HasVendorPartition(input_zip):
     system_progress -= 0.1
 
-  script.AppendExtra("if is_mounted(\"/data\") then")
-  script.ValidateSignatures("data")
-  script.AppendExtra("else")
-  script.Mount("/data")
-  script.ValidateSignatures("data")
-  script.Unmount("/data")
-  script.AppendExtra("endif;")
-
   # Place a copy of file_contexts.bin into the OTA package which will be used
   # by the recovery program.
   if "selinux_fc" in OPTIONS.info_dict:
@@ -542,8 +533,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   common.CheckSize(boot_img.data, "boot.img", OPTIONS.info_dict)
   common.ZipWriteStr(output_zip, "boot.img", boot_img.data)
-
-  device_specific.FullOTA_PostValidate()
 
   if OPTIONS.backuptool:
     script.ShowProgress(0.02, 10)
@@ -588,7 +577,9 @@ endif;
   metadata["ota-required-cache"] = str(script.required_cache)
   WriteMetadata(metadata, output_zip)
 
-  common.ZipWriteStr(output_zip, "META-INF/org/slimroms/releasekey",
+  common.ZipWriteStr(output_zip, "system/build.prop",
+                     ""+input_zip.read("SYSTEM/build.prop"))
+  common.ZipWriteStr(output_zip, "META-INF/org/slimos/releasekey",
                      ""+input_zip.read("META/releasekey.txt"))
 
 def WritePolicyConfig(file_name, output_zip):

@@ -132,13 +132,6 @@ PRODUCT_PACKAGES += \
     liblzma.vndk-sp\
     libz.vndk-sp\
 
-PRODUCT_PACKAGES += \
-    android.hardware.power@1.0-service \
-    android.hardware.power@1.0-impl
-
-# camera service treble disable until all backwards compat is complete
-PRODUCT_PROPERTY_OVERRIDES += \
-    camera.disable_treble=1
 
 PRODUCT_COPY_FILES += \
     device/generic/goldfish/init.ranchu-core.sh:vendor/bin/init.ranchu-core.sh \
