@@ -145,7 +145,13 @@ class EdifyGenerator(object):
 
   def AssertDevice(self, device):
     """Assert that the device identifier is the given string."""
-    pass
+    cmd = ('assert(' +
+           ' || \0'.join(['getprop("ro.product.device") == "%s" || getprop("ro.build.product") == "%s"'
+                         % (i, i) for i in device.split(",")]) +
+           ' || abort("E%d: This package is for device: %s; ' +
+           'this device is " + getprop("ro.product.device") + ".");' +
+           ');') % (common.ErrorCode.DEVICE_MISMATCH, device)
+    self.script.append(self.WordWrap(cmd))
 
   def AssertSomeBootloader(self, *bootloaders):
     """Assert that the bootloader version is one of *bootloaders."""
@@ -160,11 +166,6 @@ class EdifyGenerator(object):
 
   def RunBackup(self, command):
     self.script.append(('run_program("/tmp/install/bin/backuptool.sh", "%s");' % command))
-
-  def ValidateSignatures(self, command):
-    self.script.append('package_extract_file("META-INF/org/slim/releasekey", "/tmp/releasekey");')
-    # Exit code 124 == abort. run_program returns raw, so left-shift 8bit
-    self.script.append('run_program("/tmp/install/bin/otasigcheck.sh") != "31744" || abort("Can\'t install this package on top of incompatible data. Please try another package or run a factory reset");')
 
   def ShowProgress(self, frac, dur):
     """Update the progress bar, advancing it over 'frac' over the next
