@@ -980,6 +980,14 @@ endif
 endif
 
 endif # USE_LOGICAL_PARTITIONS
+ifndef USE_LOGICAL_PARTITIONS
+  USE_LOGICAL_PARTITIONS := $(PRODUCT_USE_LOGICAL_PARTITIONS)
+endif
+.KATI_READONLY := USE_LOGICAL_PARTITIONS
+
+ifeq ($(USE_LOGICAL_PARTITIONS),true)
+  BOARD_KERNEL_CMDLINE += androidboot.lrap=1
+endif
 
 # ###############################################################
 # Set up final options.
