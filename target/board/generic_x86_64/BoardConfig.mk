@@ -29,7 +29,26 @@ include build/make/target/board/BoardConfigGsiCommon.mk
 
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 576716800
 
-BOARD_SEPOLICY_DIRS += device/generic/goldfish/sepolicy/x86
+BOARD_SEPOLICY_DIRS += \
+        device/generic/goldfish/sepolicy/common \
+        device/generic/goldfish/sepolicy/x86
+
+# Android Verified Boot (AVB):
+#   Builds a special vbmeta.img that disables AVB verification.
+#   Otherwise, AVB will prevent the device from booting the generic system.img.
+#   Also checks that BOARD_AVB_ENABLE is not set, to prevent adding verity
+#   metadata into system.img.
+ifeq ($(BOARD_AVB_ENABLE),true)
+$(error BOARD_AVB_ENABLE cannot be set for GSI)
+endif
+BOARD_BUILD_DISABLED_VBMETAIMAGE := true
+
+ifneq (,$(filter userdebug eng,$(TARGET_BUILD_VARIANT)))
+# GSI is always userdebug and needs a couple of properties taking precedence
+# over those set by the vendor.
+TARGET_SYSTEM_PROP := build/make/target/board/gsi_system.prop
+endif
+BOARD_VNDK_VERSION := current
 
 # Wifi.
 BOARD_WLAN_DEVICE           := emulator
