@@ -935,6 +935,23 @@ PLATFORM_SEPOLICY_COMPAT_VERSIONS := \
     PLATFORM_SEPOLICY_VERSION \
     TOT_SEPOLICY_VERSION \
 
+ifndef USE_LOGICAL_PARTITIONS
+  USE_LOGICAL_PARTITIONS := $(PRODUCT_USE_LOGICAL_PARTITIONS)
+endif
+.KATI_READONLY := USE_LOGICAL_PARTITIONS
+
+ifeq ($(USE_LOGICAL_PARTITIONS),true)
+  BOARD_KERNEL_CMDLINE += androidboot.logical_partitions=1
+
+ifneq ($(BOARD_SYSTEMIMAGE_PARTITION_SIZE),)
+ifneq ($(BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE),)
+$(error Should not define BOARD_SYSTEMIMAGE_PARTITION_SIZE and \
+    BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE together)
+endif
+endif
+
+endif # USE_LOGICAL_PARTITIONS
+
 # ###############################################################
 # Set up final options.
 # ###############################################################
