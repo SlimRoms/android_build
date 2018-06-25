@@ -14,12 +14,27 @@
 # limitations under the License.
 #
 
--include device/generic/goldfish/x86-vendor.mk
+# The system image of aosp_x86-userdebug is a GSI for the devices with:
+# - x86 32 bits user space
+# - 64 bits binder interface
+# - system-as-root
+# - VNDK enforcement
+# - compatible property override enabled
+
+PRODUCT_PROPERTY_OVERRIDES += \
+	vendor.rild.libpath=/vendor/lib/libreference-ril.so
 
 include $(SRC_TARGET_DIR)/product/full_x86.mk
 
 # Enable dynamic partition size
 PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+
+# Enable A/B update
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS := system
+PRODUCT_PACKAGES += \
+    update_engine \
+    update_verifier
 
 # Enable A/B update
 AB_OTA_UPDATER := true
