@@ -2416,6 +2416,105 @@ $(INSTALLED_VBMETAIMAGE_TARGET): $(AVBTOOL)
 endif # BOARD_AVB_ENABLE
 
 # -----------------------------------------------------------------
+# super partition image
+
+# (1): list of items like "system", "vendor", "product", "product_services"
+# return: map each item to the corresponding image target.
+# system => $(BUILT_SYSTEMIMAGE), vendor => $(INSTALLED_VENDORIMAGE_TARGET), etc.
+define image-for-partitions
+$(foreach item,$(1),$(or $(strip $(foreach mapping,
+            system:$(BUILT_SYSTEMIMAGE)
+            product_services:$(INSTALLED_PRODUCT_SERVICESIMAGE_TARGET),
+        $(if $(filter $(call word-colon,1,$(mapping)),$(item)),
+            $(patsubst $(call word-colon,1,$(mapping)),$(call word-colon,2,$(mapping)),$(item))))),
+    $(INSTALLED_$(call to-upper,$(item)IMAGE_TARGET))))
+endef
+
+# (1): list of items like "system", "vendor", "product", "product_services"
+# return: map each item into a command ( wrapped in $$() ) that reads the size
+define read-size-of-partitions
+$(foreach p,$(1),$(call read-image-prop-dictionary,$($(p)image_intermediates)/generated_$(p)_image_info.txt,$(p)_size))
+endef
+
+ifeq (true,$(USE_LOGICAL_PARTITIONS))
+
+# BOARD_SUPER_PARTITION_SIZE must be defined to build super image.
+ifdef BOARD_SUPER_PARTITION_SIZE
+
+INSTALLED_SUPERIMAGE_TARGET := $(PRODUCT_OUT)/super.img
+$(INSTALLED_SUPERIMAGE_TARGET): $(call image-for-partitions,$(BOARD_SUPER_PARTITION_PARTITION_LIST))
+
+# For A/B devices, super partition always contains sub-partitions in the _a slot, because this
+# image should only be used for bootstrapping / initializing the device. When flashing the image,
+# bootloader fastboot should always mark _a slot as bootable.
+ifeq ($(AB_OTA_UPDATER),true)
+$(INSTALLED_SUPERIMAGE_TARGET): PRIVATE_PARTITION_SUFFIX=_a
+$(INSTALLED_SUPERIMAGE_TARGET): PRIVATE_METADATA_SLOTS=2
+else
+$(INSTALLED_SUPERIMAGE_TARGET): PRIVATE_METADATA_SLOTS=1
+endif # AB_OTA_UPDATER
+
+
+$(INSTALLED_SUPERIMAGE_TARGET): $(HOST_OUT_EXECUTABLES)/lpmake
+	$< \
+		--sparse \
+		--metadata-size 65536 \
+		--metadata-slots $(PRIVATE_METADATA_SLOTS) \
+		--device-size $(BOARD_SUPER_PARTITION_SIZE) \
+		--output $@ \
+		$(foreach name,$(BOARD_SUPER_PARTITION_PARTITION_LIST), \
+			--partition $(name)$(PRIVATE_PARTITION_SUFFIX):$$($(UUIDGEN) $(name)$(PRIVATE_PARTITION_SUFFIX)):readonly:$(call read-size-of-partitions,$(name)) \
+			--image $(name)$(PRIVATE_PARTITION_SUFFIX)=$(call image-for-partitions,$(name)))
+
+$(call dist-for-goals,dist_files,$(INSTALLED_SUPERIMAGE_TARGET))
+
+endif # BOARD_SUPER_PARTITION_SIZE
+endif # USE_LOGICAL_PARTITIONS
+
+# -----------------------------------------------------------------
+# Check image sizes <= size of super partition
+
+ifeq (,$(TARGET_BUILD_APPS))
+# Do not check for apps-only build
+
+ifeq (true,$(USE_LOGICAL_PARTITIONS))
+ifdef BOARD_SUPER_PARTITION_SIZE
+ifdef BOARD_SUPER_PARTITION_PARTITION_LIST
+
+droid_targets: check_android_partition_sizes
+
+.PHONY: check_android_partition_sizes
+
+# BOARD_SUPER_PARTITION_PARTITION_LIST: a list of the following tokens
+valid_super_partition_list := system vendor product productservices
+ifneq (,$(filter-out $(valid_super_partition_list),$(BOARD_SUPER_PARTITION_PARTITION_LIST)))
+$(error BOARD_SUPER_PARTITION_PARTITION_LIST contains invalid partition name. \
+        Valid names are $(valid_super_partition_list).)
+endif
+valid_super_partition_list :=
+
+# Add image dependencies so that generated_*_image_info.txt are written before checking.
+check_android_partition_sizes: $(call image-for-partitions,$(BOARD_SUPER_PARTITION_PARTITION_LIST))
+
+check_android_partition_sizes:
+	partition_size_list="$(call read-size-of-partitions,$(BOARD_SUPER_PARTITION_PARTITION_LIST))"; \
+	sum_sizes_expr=$$(sed -e 's/ /+/g' <<< "$${partition_size_list}"); \
+	if [ $$(( $${sum_sizes_expr} )) -gt $(BOARD_SUPER_PARTITION_SIZE) ]; then \
+		echo 'The sum of sizes of all logical partitions is larger than BOARD_SUPER_PARTITION_SIZE.'; \
+		echo $${sum_sizes_expr} '==' $$(( $${sum_sizes_expr} )) '>' $(BOARD_SUPER_PARTITION_SIZE); \
+		exit 1; \
+	else \
+		echo 'The sum of sizes of all logical partitions is within BOARD_SUPER_PARTITION_SIZE:' \
+		    $${sum_sizes_expr} '==' $$(( $${sum_sizes_expr} )) '<=' $(BOARD_SUPER_PARTITION_SIZE); \
+	fi
+
+endif # BOARD_SUPER_PARTITION_PARTITION_LIST
+endif # BOARD_SUPER_PARTITION_SIZE
+endif # USE_LOGICAL_PARTITIONS
+
+endif # TARGET_BUILD_APPS
+
+# -----------------------------------------------------------------
 # bring in the installer image generation defines if necessary
 ifeq ($(TARGET_USE_DISKINSTALLER),true)
 include bootable/diskinstaller/config.mk
