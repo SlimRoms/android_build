@@ -990,6 +990,8 @@ $(error Should not define BOARD_PRODUCTIMAGE_PARTITION_SIZE and \
 endif
 endif
 
+endif # PRODUCT_BUILD_SUPER_PARTITION
+
 # ###############################################################
 # Set up final options.
 # ###############################################################
