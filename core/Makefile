@@ -2405,14 +2405,6 @@ $(INSTALLED_VBMETAIMAGE_TARGET): \
 vbmetaimage-nodeps:
 	$(build-vbmetaimage-target)
 
-else ifeq (true,$(BOARD_BUILD_DISABLED_VBMETAIMAGE))
-BUILT_DISABLED_VBMETAIMAGE := $(PRODUCT_OUT)/vbmeta.img
-
-INSTALLED_VBMETAIMAGE_TARGET := $(BUILT_DISABLED_VBMETAIMAGE)
-$(INSTALLED_VBMETAIMAGE_TARGET): $(AVBTOOL)
-	$(hide) $(AVBTOOL) make_vbmeta_image \
-	  --flag 2 --padding_size 4096 --output $@
-
 endif # BOARD_AVB_ENABLE
 
 # -----------------------------------------------------------------
