@@ -24,9 +24,7 @@ PRODUCT_PACKAGES += \
     BasicDreams \
     BlockedNumberProvider \
     BookmarkProvider \
-    Browser2 \
     BuiltInPrintService \
-    Calendar \
     CalendarProvider \
     CaptivePortalLogin \
     CertInstaller \
@@ -34,7 +32,6 @@ PRODUCT_PACKAGES += \
     DeskClock \
     DocumentsUI \
     DownloadProviderUi \
-    Email \
     ExactCalculator \
     ExternalStorageProvider \
     FusedLocation \
@@ -49,7 +46,6 @@ PRODUCT_PACKAGES += \
     PrintSpooler \
     PrintRecommendationService \
     ProxyHandler \
-    QuickSearchBox \
     SecureElement \
     Settings \
     SettingsIntelligence \
