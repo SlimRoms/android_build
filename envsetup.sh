@@ -30,6 +30,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - gomod:      Go to the directory containing a module.
 - pathmod:    Get the directory containing a module.
 - refreshmod: Refresh list of modules for allmod/gomod.
+- repopick:   Utility to fetch changes from Gerrit.
 
 EOF
 
@@ -1705,6 +1706,11 @@ function cmka() {
         mka clean
         mka
     fi
+}
+
+function repopick() {
+    T=$(gettop)
+    $T/vendor/gzosp/build/tools/repopick.py $@
 }
 
 # Print colored exit condition
