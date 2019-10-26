@@ -230,8 +230,8 @@ include $(BUILD_SYSTEM)/envsetup.mk
 # See envsetup.mk for a description of SCAN_EXCLUDE_DIRS
 FIND_LEAVES_EXCLUDES := $(addprefix --prune=, $(SCAN_EXCLUDE_DIRS) .repo .git)
 
-ifneq ($(GZOSP_BUILD),)
-include vendor/gzosp/config/BoardConfigGZOSP.mk
+ifneq ($(SLIM_BUILD),)
+include vendor/slim/config/BoardConfigSLIM.mk
 endif
 
 # The build system exposes several variables for where to find the kernel
@@ -1183,19 +1183,19 @@ endif
 DEFAULT_DATA_OUT_MODULES := ltp $(ltp_packages) $(kselftest_modules)
 .KATI_READONLY := DEFAULT_DATA_OUT_MODULES
 
-ifneq ($(GZOSP_BUILD),)
+ifneq ($(SLIM_BUILD),)
 ## We need to be sure the global selinux policies are included
 ## last, to avoid accidental resetting by device configs
-$(eval include device/gzosp/sepolicy/common/sepolicy.mk)
+$(eval include device/slim/sepolicy/common/sepolicy.mk)
 endif
 
 # Include any vendor specific config.mk file
 -include vendor/*/build/core/config.mk
 
 # Rules for QCOM targets
--include $(TOPDIR)vendor/gzosp/build/core/qcom_target.mk
+-include $(TOPDIR)vendor/slim/build/core/qcom_target.mk
 
 # Rules for MTK targets
--include $(TOPDIR)vendor/gzosp/build/core/mtk_target.mk
+-include $(TOPDIR)vendor/slim/build/core/mtk_target.mk
 
 include $(BUILD_SYSTEM)/dumpvar.mk
