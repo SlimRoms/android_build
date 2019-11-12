@@ -4334,19 +4334,19 @@ slim: otapackage
 	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(SLIM_TARGET_PACKAGE)
 	$(hide) $(MD5SUM) $(SLIM_TARGET_PACKAGE) > $(SLIM_TARGET_PACKAGE).md5sum
 
-        @echo -e ${CL_SLIM}" "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                              _______________________________________________  "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                             /                                  slimroms.org | "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                            /   _____________________________________________| "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                           /   /                                               "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                          /   /  _  _      "${CL_SGRY}" ______                             "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                         /   /  | |(_)     "${CL_SGRY}"(_____ \                            "${CL_SLIM}
-        @echo -e ${CL_SLIM}"                        /   /   | | _ _____ "${CL_SGRY}"_____) )___  _____  ___            "${CL_SLIM}
-        @echo -e ${CL_SLIM}"  _____________________/   /    | || |     |"${CL_SGRY}"  __  // _ \|     |/___)           "${CL_SLIM}
-        @echo -e ${CL_SLIM}" |                        /     | || | | | |"${CL_SGRY}" |  \ \ |_| | | | |___ |           "${CL_SLIM}
-        @echo -e ${CL_SLIM}" |_______________________/       \_)_|_|_|_|"${CL_SGRY}"_|   |_\___/|_|_|_(___/            "${CL_SLIM}
-        @echo -e ${CL_SLIM}" "${CL_SLIM}
-        @echo -e ${CL_CYN}"Package Complete: $(SLIM_TARGET_PACKAGE)"${CL_RST}
+	@echo -e ${CL_SLIM}" "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                              _______________________________________________  "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                             /                                  slimroms.org | "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                            /   _____________________________________________| "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                           /   /                                               "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                          /   /  _  _      "${CL_SGRY}" ______                             "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                         /   /  | |(_)     "${CL_SGRY}"(_____ \                            "${CL_SLIM}
+	@echo -e ${CL_SLIM}"                        /   /   | | _ _____ "${CL_SGRY}"_____) )___  _____  ___            "${CL_SLIM}
+	@echo -e ${CL_SLIM}"  _____________________/   /    | || |     |"${CL_SGRY}"  __  // _ \|     |/___)           "${CL_SLIM}
+	@echo -e ${CL_SLIM}" |                        /     | || | | | |"${CL_SGRY}" |  \ \ |_| | | | |___ |           "${CL_SLIM}
+	@echo -e ${CL_SLIM}" |_______________________/       \_)_|_|_|_|"${CL_SGRY}"_|   |_\___/|_|_|_(___/            "${CL_SLIM}
+	@echo -e ${CL_SLIM}" "${CL_SLIM}
+	@echo -e ${CL_CYN}"Package Complete: $(SLIM_TARGET_PACKAGE)"${CL_RST}
 
 ifeq ($(BOARD_BUILD_RETROFIT_DYNAMIC_PARTITIONS_OTA_PACKAGE),true)
 name := $(TARGET_PRODUCT)
